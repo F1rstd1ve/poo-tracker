@@ -1,0 +1,7 @@
+<fitContributions>
+    <fitField id="0" displayInChart="true" sortOrder="0" precision="0"
+        chartTitle="@Strings.FitOpenBags" dataLabel="@Strings.FitOpenBags"
+        unitLabel="@Strings.FitBagsUnit" fillColor="#FF8C00"/>
+    <fitField id="1" displayInActivitySummary="true" sortOrder="1" precision="0"
+        dataLabel="@Strings.FitBagsDropped" unitLabel="@Strings.FitBagsUnit"/>
+</fitContributions>

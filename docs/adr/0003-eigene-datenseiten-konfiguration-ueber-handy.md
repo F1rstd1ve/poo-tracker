@@ -1,0 +1,3 @@
+# Eigene Datenseiten, in Version 1 über die Connect-IQ-Handy-App konfiguriert
+
+Eine Connect-IQ-Geräte-App kann weder die nativen Datenseiten der Uhr noch Connect-IQ-Datenfelder einbinden (siehe ADR 0001). Gassi-Depot zeichnet seine Datenseiten daher selbst: bis zu 3 Datenseiten mit je 1–4 Feldern aus einer festen Auswahl von 14 Werten. In Version 1 erfolgt die Konfiguration über die App-Einstellungen in der Connect-IQ-Handy-App, weil ein Editor auf der Uhr (wie bei Garmin) geschätzt 2–4 Entwicklungswochen kostet und die erste testbare Version verzögern würde. Der Editor auf der Uhr ist für Version 2 vorgesehen.

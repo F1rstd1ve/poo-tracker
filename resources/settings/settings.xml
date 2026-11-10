@@ -1,0 +1,258 @@
+<settings>
+    <setting propertyKey="@Properties.p1On" title="@Strings.SetP1On"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.p1Lay" title="@Strings.SetP1Lay">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.Lay0</listEntry>
+            <listEntry value="2">@Strings.Lay1</listEntry>
+            <listEntry value="3">@Strings.Lay2</listEntry>
+            <listEntry value="4">@Strings.Lay3</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p1F1" title="@Strings.SetP1F1">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p1F2" title="@Strings.SetP1F2">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p1F3" title="@Strings.SetP1F3">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p1F4" title="@Strings.SetP1F4">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p2On" title="@Strings.SetP2On"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.p2Lay" title="@Strings.SetP2Lay">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.Lay0</listEntry>
+            <listEntry value="2">@Strings.Lay1</listEntry>
+            <listEntry value="3">@Strings.Lay2</listEntry>
+            <listEntry value="4">@Strings.Lay3</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p2F1" title="@Strings.SetP2F1">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p2F2" title="@Strings.SetP2F2">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p2F3" title="@Strings.SetP2F3">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p2F4" title="@Strings.SetP2F4">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p3On" title="@Strings.SetP3On"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.p3Lay" title="@Strings.SetP3Lay">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.Lay0</listEntry>
+            <listEntry value="2">@Strings.Lay1</listEntry>
+            <listEntry value="3">@Strings.Lay2</listEntry>
+            <listEntry value="4">@Strings.Lay3</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p3F1" title="@Strings.SetP3F1">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p3F2" title="@Strings.SetP3F2">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p3F3" title="@Strings.SetP3F3">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.p3F4" title="@Strings.SetP3F4">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Fld0</listEntry>
+            <listEntry value="1">@Strings.Fld1</listEntry>
+            <listEntry value="2">@Strings.Fld2</listEntry>
+            <listEntry value="3">@Strings.Fld3</listEntry>
+            <listEntry value="4">@Strings.Fld4</listEntry>
+            <listEntry value="5">@Strings.Fld5</listEntry>
+            <listEntry value="6">@Strings.Fld6</listEntry>
+            <listEntry value="7">@Strings.Fld7</listEntry>
+            <listEntry value="8">@Strings.Fld8</listEntry>
+            <listEntry value="9">@Strings.Fld9</listEntry>
+            <listEntry value="10">@Strings.Fld10</listEntry>
+            <listEntry value="11">@Strings.Fld11</listEntry>
+            <listEntry value="12">@Strings.Fld12</listEntry>
+            <listEntry value="13">@Strings.Fld13</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.binsOn" title="@Strings.SetBinsOn"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.mapOn" title="@Strings.SetMapOn"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.armR" title="@Strings.SetArmR" prompt="@Strings.SetArmRPrompt"><settingConfig type="numeric" min="30" max="300"/></setting>
+    <setting propertyKey="@Properties.trigR" title="@Strings.SetTrigR" prompt="@Strings.SetTrigRPrompt"><settingConfig type="numeric" min="10" max="100"/></setting>
+    <setting propertyKey="@Properties.tone" title="@Strings.SetTone"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.osm" title="@Strings.SetOsm"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.gps" title="@Strings.SetGps">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.Gps0</listEntry>
+            <listEntry value="1">@Strings.Gps1</listEntry>
+            <listEntry value="2">@Strings.Gps2</listEntry>
+        </settingConfig>
+    </setting>
+</settings>

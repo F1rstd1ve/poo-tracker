@@ -1,0 +1,144 @@
+<strings>
+    <string id="AppName">Gassi-Depot</string>
+
+    <!-- Karten-Prototyp (Schritt 2) -->
+    <string id="MenuTitle">Aktionen</string>
+    <string id="BrowseMap">Karte erkunden</string>
+    <string id="DepotSaved">Sackdepot gespeichert</string>
+    <string id="NoGps">Noch kein GPS</string>
+    <string id="WaitingForGps">Warte auf GPS...</string>
+    <!-- Spaziergang (Schritt 3) -->
+    <string id="GpsReady">GPS bereit</string>
+    <string id="StartHint">START = Los</string>
+    <string id="Paused">Pausiert</string>
+    <string id="Resume">Fortsetzen</string>
+    <string id="Resumed">Fortgesetzt</string>
+    <string id="Save">Speichern</string>
+    <string id="Saved">Spaziergang gespeichert</string>
+    <string id="SaveFailed">Speichern fehlgeschlagen</string>
+    <string id="Discard">Verwerfen</string>
+    <string id="DiscardConfirm">Spaziergang verwerfen?</string>
+    <string id="LabelDistanceKm">DIST km</string>
+    <string id="LabelDistanceMi">DIST mi</string>
+    <!-- Sackdepot und Rückweg-Alarm (Schritt 4) -->
+    <string id="DropBag">Sack ablegen</string>
+    <string id="DepotSavedImprecise">Gespeichert (GPS ungenau)</string>
+    <string id="NoGpsNotSaved">Kein GPS - nicht gespeichert</string>
+    <string id="Cancelled">Abgebrochen</string>
+    <string id="PickedUp">Aufgehoben</string>
+    <string id="Disposed">Entsorgt</string>
+    <string id="OpenDepots">Offene Sackdepots</string>
+    <string id="AlarmOne">Sack hier!</string>
+    <string id="AlarmMany">$1$ Säcke hier!</string>
+    <string id="AlarmHint">MENU halten: Aufgehoben</string>
+    <string id="BagsOne">1 Sack</string>
+    <string id="BagsMany">$1$ Säcke</string>
+    <string id="StartOpenOne">1 offenes Sackdepot</string>
+    <string id="StartOpenMany">$1$ offene Sackdepots</string>
+    <string id="OpenBagsWarnOne">1 Sack noch offen - trotzdem beenden?</string>
+    <string id="OpenBagsWarnMany">$1$ Säcke noch offen - trotzdem beenden?</string>
+    <string id="DeleteDepotConfirm">Sackdepot löschen?</string>
+    <string id="DepotDeleted">Gelöscht</string>
+    <string id="AgeMin">vor $1$ min</string>
+    <string id="AgeHours">vor $1$ Std.</string>
+    <string id="AgeDays">vor $1$ Tagen</string>
+    <!-- Mülleimer (Schritt 5) -->
+    <string id="AddBin">Mülleimer hinzufügen</string>
+    <string id="RemoveBin">Mülleimer entfernen</string>
+    <string id="BinSaved">Mülleimer gespeichert</string>
+    <string id="BinExists">Schon ein Mülleimer hier</string>
+    <string id="SaveAnyway">Trotzdem speichern</string>
+    <string id="Cancel">Abbrechen</string>
+    <string id="BinDeleted">Mülleimer gelöscht</string>
+    <string id="BinHidden">Mülleimer ausgeblendet</string>
+    <string id="NoBinNearby">Kein Mülleimer in der Nähe</string>
+    <string id="KindOwn">Eigener Mülleimer</string>
+    <string id="KindOsm">Mülleimer (OSM)</string>
+    <string id="KindDog">Hundekot-Behälter</string>
+    <string id="BinGuideTitle">MÜLLEIMER</string>
+    <string id="NoBinKnown">Kein Mülleimer bekannt</string>
+    <string id="OsmLoading">Lade Mülleimer...</string>
+    <string id="OsmOffline">Mülleimer offline</string>
+    <string id="UndoDispose">Entsorgen rückgängig</string>
+    <string id="DisposedAuto">Entsorgt? (Menü: rückgängig)</string>
+    <string id="UndoDrop">Ablegen rückgängig</string>
+    <!-- Gassi-Server (ADR 0006) -->
+    <string id="ConsentQuestion">Mülleimer online laden und eigene teilen? Dabei geht die ungefähre Position an den Gassi-Server. Mehr: MENU halten.</string>
+    <string id="OnlineOn">Online-Mülleimer an</string>
+    <string id="OnlineOff">Online-Mülleimer aus</string>
+    <string id="OnlineOffShort">Online-Mülleimer aus</string>
+    <string id="SettingsTitle">Gassi-Depot</string>
+    <string id="OnlineBins">Online-Mülleimer</string>
+    <string id="OnlineBinsSub">Laden und teilen</string>
+    <string id="Privacy">Datenschutz</string>
+    <string id="PrivacySub">Öffnet am Handy</string>
+    <string id="SeePhone">Siehe Handy</string>
+    <string id="Undone">Rückgängig gemacht</string>
+    <!-- Einstellungen und Datenfelder (Schritt 6) -->
+    <string id="SetP1On" scope="settings">Datenseite 1: anzeigen</string>
+    <string id="SetP1Lay" scope="settings">Datenseite 1: Layout</string>
+    <string id="SetP1F1" scope="settings">Datenseite 1: Feld 1</string>
+    <string id="SetP1F2" scope="settings">Datenseite 1: Feld 2</string>
+    <string id="SetP1F3" scope="settings">Datenseite 1: Feld 3</string>
+    <string id="SetP1F4" scope="settings">Datenseite 1: Feld 4</string>
+    <string id="SetP2On" scope="settings">Datenseite 2: anzeigen</string>
+    <string id="SetP2Lay" scope="settings">Datenseite 2: Layout</string>
+    <string id="SetP2F1" scope="settings">Datenseite 2: Feld 1</string>
+    <string id="SetP2F2" scope="settings">Datenseite 2: Feld 2</string>
+    <string id="SetP2F3" scope="settings">Datenseite 2: Feld 3</string>
+    <string id="SetP2F4" scope="settings">Datenseite 2: Feld 4</string>
+    <string id="SetP3On" scope="settings">Datenseite 3: anzeigen</string>
+    <string id="SetP3Lay" scope="settings">Datenseite 3: Layout</string>
+    <string id="SetP3F1" scope="settings">Datenseite 3: Feld 1</string>
+    <string id="SetP3F2" scope="settings">Datenseite 3: Feld 2</string>
+    <string id="SetP3F3" scope="settings">Datenseite 3: Feld 3</string>
+    <string id="SetP3F4" scope="settings">Datenseite 3: Feld 4</string>
+    <string id="Lay0" scope="settings">1 Feld</string>
+    <string id="Lay1" scope="settings">2 Felder</string>
+    <string id="Lay2" scope="settings">3 Felder</string>
+    <string id="Lay3" scope="settings">4 Felder</string>
+    <string id="Fld0" scope="settings">Zeit</string>
+    <string id="Fld1" scope="settings">Distanz</string>
+    <string id="Fld2" scope="settings">Tempo</string>
+    <string id="Fld3" scope="settings">Ø Tempo</string>
+    <string id="Fld4" scope="settings">Puls</string>
+    <string id="Fld5" scope="settings">Ø Puls</string>
+    <string id="Fld6" scope="settings">Höhe</string>
+    <string id="Fld7" scope="settings">Anstieg</string>
+    <string id="Fld8" scope="settings">Kalorien</string>
+    <string id="Fld9" scope="settings">Schritte</string>
+    <string id="Fld10" scope="settings">Uhrzeit</string>
+    <string id="Fld11" scope="settings">Offene Sackdepots</string>
+    <string id="Fld12" scope="settings">Distanz Sackdepot</string>
+    <string id="Fld13" scope="settings">Distanz Mülleimer</string>
+    <string id="Gps0" scope="settings">Alle Systeme + Mehrfrequenz</string>
+    <string id="Gps1" scope="settings">Alle Systeme</string>
+    <string id="Gps2" scope="settings">Nur GPS</string>
+    <string id="SetBinsOn" scope="settings">Mülleimer-Führung anzeigen</string>
+    <string id="SetMapOn" scope="settings">Kartenseite anzeigen</string>
+    <string id="SetArmR" scope="settings">Alarm scharf ab (m)</string>
+    <string id="SetArmRPrompt" scope="settings">Entfernung, ab der der Rückweg-Alarm scharf wird</string>
+    <string id="SetTrigR" scope="settings">Alarm auslösen bei (m)</string>
+    <string id="SetTrigRPrompt" scope="settings">Entfernung zum Sack, bei der der Alarm auslöst</string>
+    <string id="SetTone" scope="settings">Alarmton</string>
+    <string id="SetOsm" scope="settings">Online-Mülleimer (laden und teilen)</string>
+    <string id="SetGps" scope="settings">GPS-Modus</string>
+    <string id="Lbl0">ZEIT</string>
+    <string id="Lbl1">DIST</string>
+    <string id="Lbl2">TEMPO</string>
+    <string id="Lbl3">Ø TEMPO</string>
+    <string id="Lbl4">PULS</string>
+    <string id="Lbl5">Ø PULS</string>
+    <string id="Lbl6">HÖHE</string>
+    <string id="Lbl7">ANSTIEG</string>
+    <string id="Lbl8">KCAL</string>
+    <string id="Lbl9">SCHRITTE</string>
+    <string id="Lbl10">UHRZEIT</string>
+    <string id="Lbl11">OFFENE SÄCKE</string>
+    <string id="Lbl12">ZUM SACK</string>
+    <string id="Lbl13">ZUM MÜLLEIMER</string>
+    <!-- Garmin Connect labels for the FIT fields -->
+    <string id="FitOpenBags">Offene Säcke</string>
+    <string id="FitBagsDropped">Abgelegte Säcke</string>
+    <string id="FitBagsUnit">Säcke</string>
+</strings>

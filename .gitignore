@@ -1,0 +1,9 @@
+bin/
+gen/
+*.der
+*.pem
+.DS_Store
+server/public/t1/
+server/.wrangler/
+node_modules/
+__pycache__/

@@ -1,0 +1,27 @@
+<properties>
+    <property id="p1On" type="boolean">true</property>
+    <property id="p1Lay" type="number">4</property>
+    <property id="p1F1" type="number">0</property>
+    <property id="p1F2" type="number">1</property>
+    <property id="p1F3" type="number">4</property>
+    <property id="p1F4" type="number">10</property>
+    <property id="p2On" type="boolean">true</property>
+    <property id="p2Lay" type="number">3</property>
+    <property id="p2F1" type="number">11</property>
+    <property id="p2F2" type="number">12</property>
+    <property id="p2F3" type="number">13</property>
+    <property id="p2F4" type="number">1</property>
+    <property id="p3On" type="boolean">false</property>
+    <property id="p3Lay" type="number">2</property>
+    <property id="p3F1" type="number">2</property>
+    <property id="p3F2" type="number">3</property>
+    <property id="p3F3" type="number">4</property>
+    <property id="p3F4" type="number">5</property>
+    <property id="binsOn" type="boolean">true</property>
+    <property id="mapOn" type="boolean">true</property>
+    <property id="armR" type="number">50</property>
+    <property id="trigR" type="number">25</property>
+    <property id="tone" type="boolean">true</property>
+    <property id="osm" type="boolean">true</property>
+    <property id="gps" type="number">0</property>
+</properties>

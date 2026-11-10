@@ -1,0 +1,6 @@
+<drawables>
+    <bitmap id="LauncherIcon" filename="launcher_icon.png"/>
+    <bitmap id="MarkerDepot" filename="marker_depot.png"/>
+    <bitmap id="MarkerBin" filename="marker_bin.png"/>
+    <bitmap id="MarkerDogBin" filename="marker_dogbin.png"/>
+</drawables>

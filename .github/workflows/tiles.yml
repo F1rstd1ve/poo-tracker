@@ -1,0 +1,49 @@
+# Weekly Mülleimer-Kacheln for Germany, Austria and Switzerland (ADR 0006),
+# deployed with the Gassi-Server to Cloudflare.
+# Needs the repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+name: Mülleimer-Kacheln
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"   # Mondays 03:17 UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["server/**", "pipeline/**", ".github/workflows/tiles.yml"]
+
+concurrency:
+  group: tiles
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      # Deploy only once the Cloudflare secrets are set up.
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install osmium
+        run: sudo apt-get update && sudo apt-get install -y osmium-tool
+
+      - name: Download OSM extracts (Geofabrik)
+        run: |
+          mkdir -p /tmp/osm
+          for c in germany austria switzerland; do
+            curl -sSfL -o /tmp/osm/$c.osm.pbf https://download.geofabrik.de/europe/$c-latest.osm.pbf
+          done
+          ls -lh /tmp/osm
+
+      - name: Build tiles
+        run: python3 pipeline/build_tiles.py /tmp/osm/germany.osm.pbf /tmp/osm/austria.osm.pbf /tmp/osm/switzerland.osm.pbf --out server/public
+
+      - name: Deploy to Cloudflare
+        if: env.HAS_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: server
+          command: deploy
