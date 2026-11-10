@@ -45,5 +45,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # The action's default Wrangler is too old for an assets-only Worker.
+          wranglerVersion: "4.160.0"
           workingDirectory: server
           command: deploy
