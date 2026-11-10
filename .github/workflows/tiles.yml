@@ -23,7 +23,7 @@ jobs:
       # Deploy only once the Cloudflare secrets are set up.
       HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install osmium
         run: sudo apt-get update && sudo apt-get install -y osmium-tool
