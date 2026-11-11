@@ -38,12 +38,16 @@ class MapPageView extends WatchUi.MapTrackView {
     private var _depotIcon as WatchUi.BitmapResource;
     private var _binIcon as WatchUi.BitmapResource;
     private var _dogBinIcon as WatchUi.BitmapResource;
+    private var _binRingIcon as WatchUi.BitmapResource;
+    private var _dogBinRingIcon as WatchUi.BitmapResource;
 
     function initialize() {
         MapTrackView.initialize();
         _depotIcon = WatchUi.loadResource(Rez.Drawables.MarkerDepot) as WatchUi.BitmapResource;
         _binIcon = WatchUi.loadResource(Rez.Drawables.MarkerBin) as WatchUi.BitmapResource;
         _dogBinIcon = WatchUi.loadResource(Rez.Drawables.MarkerDogBin) as WatchUi.BitmapResource;
+        _binRingIcon = WatchUi.loadResource(Rez.Drawables.MarkerBinRing) as WatchUi.BitmapResource;
+        _dogBinRingIcon = WatchUi.loadResource(Rez.Drawables.MarkerDogBinRing) as WatchUi.BitmapResource;
 
         _track = newTrack();
         setMapMode(WatchUi.MAP_MODE_PREVIEW);
@@ -146,7 +150,10 @@ class MapPageView extends WatchUi.MapTrackView {
             var p = Bins.degrees(here);
             var list = Bins.nearestN(p[0], p[1], 40, 500.0);
             for (var i = 0; i < list.size(); i++) {
-                var icon = list[i].kind == Bins.KIND_OSM_DOG ? _dogBinIcon : _binIcon;
+                var b = list[i];
+                var dog = b.kind == Bins.KIND_DOG;
+                // Unconfirmed bins as a ring (ADR 0006).
+                var icon = b.confirmed ? (dog ? _dogBinIcon : _binIcon) : (dog ? _dogBinRingIcon : _binRingIcon);
                 var marker = new WatchUi.MapMarker(list[i].location());
                 marker.setIcon(icon, icon.getWidth() / 2, icon.getHeight() / 2);
                 _binMarkers.add(marker);

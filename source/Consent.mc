@@ -19,8 +19,15 @@ module Consent {
         return Application.Storage.getValue(KEY) == true;
     }
 
+    // Switching sharing on creates the Kennung and queues own bins; switching
+    // it off forgets the Kennung and unsent Beiträge (privacy policy).
     function set(value as Boolean) as Void {
         Application.Storage.setValue(KEY, value);
+        if (value) {
+            ShareQueue.onConsent();
+        } else {
+            ShareQueue.forget();
+        }
     }
 
     // Online loading is allowed (consent and phone-app setting).
@@ -60,8 +67,11 @@ module StartMenu {
 
     function open() as Void {
         var menu = new WatchUi.Menu2({:title => Rez.Strings.SettingsTitle});
-        menu.addItem(new WatchUi.ToggleMenuItem(Rez.Strings.OnlineBins, Rez.Strings.OnlineBinsSub,
-            :online, Consent.given(), null));
+        var sub = Consent.given()
+            ? Lang.format(WatchUi.loadResource(Rez.Strings.ShareStatus) as String,
+                [Bins.sharedOwnCount(), ShareQueue.size()])
+            : WatchUi.loadResource(Rez.Strings.OnlineBinsSub) as String;
+        menu.addItem(new WatchUi.ToggleMenuItem(Rez.Strings.OnlineBins, sub, :online, Consent.given(), null));
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.Privacy, Rez.Strings.PrivacySub, :privacy, null));
         WatchUi.pushView(menu, new StartMenuDelegate(), WatchUi.SLIDE_UP);
     }

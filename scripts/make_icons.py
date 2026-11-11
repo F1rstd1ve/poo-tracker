@@ -75,6 +75,16 @@ def bin_shape(d, cx, cy, w, h, color):
     )
 
 
+def ring_marker(size, color, draw_symbol, name):
+    """Unconfirmed bin: dark centre, coloured ring, symbol in the ring colour."""
+    img, d = canvas(size)
+    d.ellipse([s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)], fill=WHITE)
+    d.ellipse([s(2), s(2), s(size - 2), s(size - 2)], fill=color)
+    d.ellipse([s(5), s(5), s(size - 5), s(size - 5)], fill=DARK)
+    draw_symbol(d, size)
+    finish(img, size, name)
+
+
 def round_marker(size, fill, draw_symbol, name):
     img, d = canvas(size)
     d.ellipse([s(0.5), s(0.5), s(size - 0.5), s(size - 0.5)], fill=WHITE)
@@ -127,6 +137,8 @@ def main():
         d.ellipse([s(n / 2 - r), s(n / 2 + 1 - r), s(n / 2 + r), s(n / 2 + 1 + r)], fill=TEAL)
 
     round_marker(24, TEAL, dog_bin, "marker_dogbin.png")
+    ring_marker(24, GREEN, lambda d, n: bin_shape(d, n / 2, n / 2, n * 0.34, n * 0.4, GREEN), "marker_bin_ring.png")
+    ring_marker(24, TEAL, lambda d, n: bin_shape(d, n / 2, n / 2, n * 0.34, n * 0.4, TEAL), "marker_dogbin_ring.png")
     menu_icons()
     print("Icons written to", OUT)
 

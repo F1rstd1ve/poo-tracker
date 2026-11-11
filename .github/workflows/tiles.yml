@@ -1,6 +1,9 @@
 # Weekly Mülleimer-Kacheln for Germany, Austria and Switzerland (ADR 0006),
 # deployed with the Gassi-Server to Cloudflare.
 # Needs the repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+# The token needs Workers Scripts: Edit and D1: Edit for the shared bins
+# (Etappe B). Without D1 access the tiles are still built and deployed, just
+# without merging the shared bins (a warning is shown in the run).
 name: Mülleimer-Kacheln
 
 on:
@@ -22,8 +25,15 @@ jobs:
     env:
       # Deploy only once the Cloudflare secrets are set up.
       HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      WRANGLER_SEND_METRICS: "false"
+      # Same version as the deploy step below.
+      WRANGLER: npx --yes wrangler@4.160.0
     steps:
       - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"   # Wrangler 4.160 needs Node >= 22.12
 
       - name: Install osmium
         run: sudo apt-get update && sudo apt-get install -y osmium-tool
@@ -36,8 +46,51 @@ jobs:
           done
           ls -lh /tmp/osm
 
+      - name: Apply D1 migrations
+        id: migrate
+        if: env.HAS_CLOUDFLARE == 'true'
+        continue-on-error: true
+        working-directory: server
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: $WRANGLER d1 migrations apply poo-tracker --remote
+
+      - name: Warn about failed D1 migrations
+        if: steps.migrate.outcome == 'failure'
+        run: echo "::warning title=D1 migrations failed::Applying server/migrations to D1 poo-tracker failed (does the API token have D1 Edit?). The shared-bins API will not work until this is fixed."
+
+      - name: Export shared bins (D1)
+        id: shared
+        if: env.HAS_CLOUDFLARE == 'true'
+        working-directory: server
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if $WRANGLER d1 execute poo-tracker --remote --json \
+               --command "SELECT id,lat,lon,kind,confirmed FROM bins" > /tmp/shared.json 2> /tmp/shared.err \
+             && python3 -c 'import json, sys; d = json.load(open(sys.argv[1])); sys.exit(0 if isinstance(d, list) and all(isinstance(x, dict) and x.get("success") for x in d) else 1)' /tmp/shared.json
+          then
+            echo "ok=1" >> "$GITHUB_OUTPUT"
+            echo "Shared bins exported."
+          else
+            echo "::warning title=Shared bins not exported::wrangler d1 execute failed (does the API token have D1 Edit?). Building tiles from OSM only."
+            cat /tmp/shared.err || true
+            head -c 2000 /tmp/shared.json || true
+            rm -f /tmp/shared.json
+          fi
+
       - name: Build tiles
-        run: python3 pipeline/build_tiles.py /tmp/osm/germany.osm.pbf /tmp/osm/austria.osm.pbf /tmp/osm/switzerland.osm.pbf --out server/public
+        env:
+          SHARED_OK: ${{ steps.shared.outputs.ok }}
+        run: |
+          shared=()
+          if [ "$SHARED_OK" = "1" ]; then
+            shared=(--shared /tmp/shared.json --delete-sql /tmp/delete_shared.sql)
+          fi
+          python3 pipeline/build_tiles.py /tmp/osm/germany.osm.pbf /tmp/osm/austria.osm.pbf /tmp/osm/switzerland.osm.pbf \
+            --out server/public "${shared[@]}"
 
       - name: Deploy to Cloudflare
         if: env.HAS_CLOUDFLARE == 'true'
@@ -49,3 +102,17 @@ jobs:
           wranglerVersion: "4.160.0"
           workingDirectory: server
           command: deploy
+
+      - name: Delete unconfirmed shared bins that duplicate OSM bins
+        if: env.HAS_CLOUDFLARE == 'true' && steps.shared.outputs.ok == '1'
+        working-directory: server
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -s /tmp/delete_shared.sql ]; then
+            cat /tmp/delete_shared.sql
+            $WRANGLER d1 execute poo-tracker --remote --file /tmp/delete_shared.sql
+          else
+            echo "Nothing to delete."
+          fi

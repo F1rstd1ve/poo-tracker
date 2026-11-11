@@ -71,7 +71,12 @@ class BinGuideView extends WatchUi.View {
             var x = (cx + ring * Math.sin(a)).toNumber();
             var y = (cy - ring * Math.cos(a)).toNumber();
             dc.setColor(kindColor(b.kind), Graphics.COLOR_TRANSPARENT);
-            dc.fillCircle(x, y, 7);
+            if (b.confirmed) {
+                dc.fillCircle(x, y, 7);
+            } else {
+                dc.setPenWidth(3);
+                dc.drawCircle(x, y, 6);
+            }
             if (b == target) {
                 dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
                 dc.setPenWidth(2);
@@ -117,8 +122,7 @@ class BinGuideView extends WatchUi.View {
                 Format.shortDistance(Bins.dist(p[0], p[1], target.lat, target.lon)),
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
             dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(cx, h * 0.8, Graphics.FONT_XTINY,
-                WatchUi.loadResource(BinActions.kindLabel(target.kind)) as String,
+            dc.drawText(cx, h * 0.8, Graphics.FONT_XTINY, BinActions.label(target),
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
 
@@ -155,6 +159,6 @@ class BinGuideView extends WatchUi.View {
     }
 
     static function kindColor(kind as Number) as Graphics.ColorType {
-        return kind == Bins.KIND_OSM_DOG ? 0x0090D0 : Graphics.COLOR_GREEN;
+        return kind == Bins.KIND_DOG ? 0x0090D0 : Graphics.COLOR_GREEN;
     }
 }

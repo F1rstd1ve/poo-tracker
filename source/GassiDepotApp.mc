@@ -16,6 +16,10 @@ class GassiDepotApp extends Application.AppBase {
         DepotStore.load();
         Bins.load();
         TileLoader.load();
+        SharedLoader.load();
+        ShareQueue.load();
+        // Own bins from before Etappe B (or added without consent) are shared once.
+        ShareQueue.enqueueUnshared();
         Pages.setup();
         Pages.map().refreshDepots();
         GpsService.start(method(:onPosition));

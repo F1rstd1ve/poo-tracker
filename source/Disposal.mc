@@ -38,6 +38,7 @@ module Disposal {
     }
 
     function dispose(automatic as Boolean) as Void {
+        confirmBin();
         undoDepots = DepotStore.inState(DepotStore.STATE_PICKED);
         undoUntil = automatic ? Time.now().value() + UNDO_SECONDS : 0;
         DepotStore.removeInState(DepotStore.STATE_PICKED);
@@ -45,6 +46,25 @@ module Disposal {
         Pages.returnFromBins();
         Feedback.vibe();
         Feedback.toast(automatic ? Rez.Strings.DisposedAuto : Rez.Strings.Disposed);
+    }
+
+    // "Entsorgt" at an unconfirmed geteilter Mülleimer of another user
+    // confirms it (ADR 0006: same bin = within 8 m).
+    function confirmBin() as Void {
+        var here = GpsService.position();
+        if (here == null) {
+            return;
+        }
+        var p = Bins.degrees(here);
+        var near = Bins.nearestN(p[0], p[1], 1, Bins.SAME_BIN_M);
+        if (near.size() == 0) {
+            return;
+        }
+        var bin = near[0];
+        if (bin.origin == Bins.ORIGIN_SHARED && !bin.confirmed) {
+            ShareQueue.confirm(Bins.shSid[bin.src]);
+            Bins.confirmShared(bin.src);
+        }
     }
 
     function canUndo() as Boolean {

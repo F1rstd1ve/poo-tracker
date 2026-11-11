@@ -57,7 +57,7 @@ Eine per Sideload installierte App ist nur auf deiner Uhr, aktualisiert sich nic
 
 Spätere Alternative: Upload in den Connect IQ Store als **Beta-App** (nur für dich sichtbar), Installation und Updates dann über die Connect-IQ-App am Handy.
 
-## Gassi-Server (Mülleimer-Kacheln)
+## Gassi-Server (Mülleimer-Kacheln und geteilte Mülleimer)
 
 Siehe [docs/spec-server.md](docs/spec-server.md) und [ADR 0006](docs/adr/0006-eigener-gassi-server.md).
 
@@ -75,7 +75,7 @@ Auf Cloudflare bringt sie die GitHub Action `.github/workflows/tiles.yml` (wöch
 |---|---|
 | START | Pause-Menü (Fortsetzen / Speichern / Verwerfen) |
 | LAP (kurz) | Sack ablegen; in Menüs, im Karten-Erkunden und auf dem Alarmbildschirm: zurück |
-| MENU halten (lange UP) | Aktionsmenü: Ablegen rückgängig, Aufgehoben/Entsorgt, Mülleimer hinzufügen/entfernen, Offene Sackdepots, Karte erkunden |
+| MENU halten (lange UP) | Aktionsmenü: Ablegen rückgängig, Aufgehoben/Entsorgt, Mülleimer / Hundekot-Behälter anlegen, Mülleimer entfernen, Offene Sackdepots, Karte erkunden |
 | UP / DOWN | Seiten blättern |
 
 ## Einstellungen ändern
@@ -132,8 +132,10 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] Offenes Sackdepot: roter Pfeil + Distanz zum Sack, rote Randpunkte, Mülleimer-Distanz unten
 - [ ] Nach *Aufgehoben* springt die Uhr zur Mülleimer-Führung
 - [ ] Beim Mülleimer ≥ 3 s stehen bleiben → „Entsorgt? (Menü: rückgängig)“, zurück zur vorherigen Seite; MENU halten → *Entsorgen rückgängig* (30 s)
-- [ ] MENU halten → *Mülleimer hinzufügen*; direkt neben einem bekannten → „Schon ein Mülleimer hier“ mit *Abbrechen* vorausgewählt
-- [ ] MENU halten → *Mülleimer entfernen*: 3 nächste; eigener wird gelöscht, OSM-Mülleimer ausgeblendet
+- [ ] MENU halten → *Mülleimer anlegen* / *Hundekot-Behälter anlegen*; ≤ 8 m neben einem bekannten derselben Art → „Schon ein Mülleimer hier“ mit *Abbrechen* vorausgewählt
+- [ ] MENU halten → *Mülleimer entfernen*: 3 nächste; eigener unbestätigter wird gelöscht, alle anderen „gemeldet“ (hier sofort weg)
+- [ ] Teilen: Startbildschirm → MENU halten → *Online-Mülleimer* zeigt „Geteilt: n · wartend: m“; mit Handy wird „wartend“ nach kurzer Zeit 0
+- [ ] Unbestätigte Mülleimer als Ring (Karte, Pfeilseite „· unbestätigt“); ein zweites Gerät/Konto bestätigt durch Anlegen oder Entsorgen
 - [ ] Alarmton ist jetzt ein sanfter Drei-Ton-Gong (statt Garmin-Alarmton)
 
 ## Testliste Datenseiten & Feinschliff (Schritte 6–7)

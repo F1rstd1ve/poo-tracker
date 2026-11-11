@@ -21,13 +21,13 @@ Ein Mülleimer, den ein Nutzer der App angelegt hat. Mit Zustimmung zum Teilen i
 _Vermeiden_: Eigener Mülleimer (als eigene Kategorie), Community-Mülleimer
 
 **Unbestätigt / Bestätigt**:
-Zustand eines geteilten Mülleimers. Neu angelegt ist er unbestätigt; bestätigt wird er, wenn ein zweiter Nutzer ihn ebenfalls anlegt oder dort entsorgt. Unbestätigte verschwinden nach 6 Monaten.
+Zustand eines geteilten Mülleimers. Neu angelegt ist er unbestätigt; bestätigt wird er, wenn ein zweiter Nutzer ihn ebenfalls anlegt oder dort entsorgt (gleiche Art, höchstens 8 m, genaues GPS). Unbestätigte verschwinden nach 6 Monaten. Auf der Uhr sind unbestätigte als Ring statt als Punkt dargestellt.
 
 **OSM-Mülleimer**:
 Ein Mülleimer aus OpenStreetMap, den die App aus der Umgebung geladen hat.
 
 **Hundekot-Behälter**:
-Ein OSM-Mülleimer, der ausdrücklich für Hundekot gedacht ist, oft mit Sackerl-Spender. Wird bei annähernd gleicher Entfernung gegenüber allgemeinen Mülleimern bevorzugt.
+Ein Mülleimer (aus OSM oder geteilt), der ausdrücklich für Hundekot gedacht ist, oft mit Sackerl-Spender. Beim Anlegen wählt man im Aktionsmenü *Mülleimer anlegen* oder *Hundekot-Behälter anlegen*. Wird bei annähernd gleicher Entfernung gegenüber allgemeinen Mülleimern bevorzugt.
 _Vermeiden_: Hundestation, Dog-Bin
 
 **Meldung**:
@@ -36,6 +36,14 @@ _Vermeiden_: Ausblenden, Löschen (Löschen gilt nur für eigene, noch unbestät
 
 **Teilen**:
 Die einmalige Zustimmung, Mülleimer online zu laden und eigene Mülleimer mit allen zu teilen. Dabei gehen ungefähre Positionen an den Gassi-Server. Ohne Zustimmung gibt es nur Mülleimer auf der eigenen Uhr.
+
+**Kennung**:
+Eine zufällige, anonyme Nummer der Uhr, mit der der Gassi-Server Beiträge desselben Nutzers erkennt (Bestätigen, Meldungen, Tagesgrenzen). Entsteht bei der Zustimmung zum Teilen und wird beim Ausschalten vergessen.
+_Vermeiden_: Benutzer-ID, Konto, Geräte-ID
+
+**Beitrag**:
+Was die Uhr an den Gassi-Server schickt: ein angelegter Mülleimer, eine Meldung, eine Bestätigung durch Entsorgen oder das Löschen eines eigenen unbestätigten Mülleimers. Beiträge warten auf der Uhr, bis das Handy verbunden ist.
+_Vermeiden_: Upload, Sync
 
 **Gassi-Server**:
 Der eigene Server der App (Cloudflare), der Mülleimer-Kacheln ausliefert und geteilte Mülleimer verwaltet.

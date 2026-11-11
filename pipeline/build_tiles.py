@@ -3,6 +3,7 @@
 
 Usage:
     python3 pipeline/build_tiles.py <extract.osm.pbf> [<more.osm.pbf> ...] --out server/public
+        [--shared shared.json --delete-sql delete.sql]
 
 Needs the `osmium` command line tool (osmium-tool). Standard library only.
 
@@ -20,6 +21,18 @@ Tile scheme (version t1), also described in docs/spec-server.md:
     the SW corner of the leaf.
   - t1/meta.json  {"v": 1, "date": "...", "bins": n, "roots": n, "leaves": n}
 Roots without any bin get no files: the watch then falls back to Overpass.
+
+Shared bins (Etappe B, optional): --shared takes the JSON output of
+    wrangler d1 execute poo-tracker --remote --json \
+        --command "SELECT id,lat,lon,kind,confirmed FROM bins"
+("same bin" = same kind and at most SAME_BIN_M metres apart; kind 1 = general
+bin, 2 = dog bin):
+  - an OSM bin near a CONFIRMED shared bin is left out of the tiles;
+  - an UNCONFIRMED shared bin near an OSM bin (one that stays in the tiles) is
+    deleted on the server: --delete-sql gets the DELETE statements (the file is
+    always written, empty if there is nothing to delete).
+A missing or unreadable --shared file only prints a warning; the tiles are
+then built from OSM alone.
 """
 import argparse
 import datetime
@@ -36,6 +49,10 @@ MAX_LEAF = 400
 MAX_DEPTH = 6
 UNIT = 1e-5
 VERSION = "t1"
+SAME_BIN_M = 8.0
+METRES_PER_DEG = 6371008.8 * math.pi / 180
+CELL_DEG = 2e-4  # grid hash cell for the "same bin" search (~22 m north-south)
+DELETE_CHUNK = 200
 
 FILTERS = [
     "n/amenity=waste_basket",
@@ -77,6 +94,122 @@ def root_of(lat, lon):
 
 def root_origin(ri, rj):
     return ri * ROOT_DEG - 90, rj * ROOT_DEG - 180
+
+
+def kind_of(dog):
+    return 2 if dog else 1
+
+
+def dist_m(lat1, lon1, lat2, lon2):
+    """Equirectangular distance in metres, exact enough for a few metres."""
+    x = (lon2 - lon1) * math.cos(math.radians((lat1 + lat2) / 2))
+    return math.hypot(lat2 - lat1, x) * METRES_PER_DEG
+
+
+def parse_wrangler_json(text):
+    """Return the row dicts of `wrangler d1 execute --json` output.
+
+    The output is a list with one entry per SQL statement:
+        [{"results": [{"id": 1, "lat": 48.2, ...}, ...], "success": true, "meta": {...}}]
+    Tolerates log lines before the JSON and a plain list of rows.
+    """
+    text = text.strip()
+    try:
+        data = json.loads(text)
+    except ValueError:
+        starts = [i for i in (text.find("["), text.find("{")) if i >= 0]
+        if not starts:
+            raise
+        data, _ = json.JSONDecoder().raw_decode(text[min(starts):])
+    rows = []
+
+    def collect(node):
+        if isinstance(node, list):
+            for item in node:
+                collect(item)
+        elif isinstance(node, dict):
+            if isinstance(node.get("results"), list):
+                collect(node["results"])
+            elif "lat" in node and "lon" in node:
+                rows.append(node)
+            elif node.get("success") is False or "error" in node:
+                raise ValueError("wrangler reported an error: %s" % json.dumps(node)[:300])
+
+    collect(data)
+    return rows
+
+
+def load_shared(path):
+    """Shared bins as (id, lat, lon, kind, confirmed), or None if unusable."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            rows = parse_wrangler_json(f.read())
+        shared = []
+        for r in rows:
+            shared.append((int(r["id"]), float(r["lat"]), float(r["lon"]), int(r["kind"]),
+                           1 if int(r.get("confirmed") or 0) else 0))
+        return shared
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        print("WARNING: shared bins not usable (%s: %s); building tiles from OSM only"
+              % (path, e), file=sys.stderr)
+        return None
+
+
+def cell_of(lat, lon):
+    return math.floor(lat / CELL_DEG), math.floor(lon / CELL_DEG)
+
+
+class NearIndex:
+    """Grid hash for "is there a point of this kind within SAME_BIN_M?".
+
+    Every point is registered in all cells its SAME_BIN_M circle can touch,
+    so a query is a single dict lookup plus a few distance checks.
+    """
+
+    def __init__(self, points):
+        self.cells = {}
+        dlat = int(math.ceil(SAME_BIN_M / (METRES_PER_DEG * CELL_DEG)))
+        for p in points:
+            lat, lon = p[0], p[1]
+            cos = max(0.01, math.cos(math.radians(lat)))
+            dlon = int(math.ceil(SAME_BIN_M / (METRES_PER_DEG * cos * CELL_DEG)))
+            ci, cj = cell_of(lat, lon)
+            for i in range(ci - dlat, ci + dlat + 1):
+                for j in range(cj - dlon, cj + dlon + 1):
+                    self.cells.setdefault((i, j), []).append(p)
+
+    def near(self, lat, lon, kind):
+        """Points (lat, lon, kind, ...) of `kind` within SAME_BIN_M."""
+        found = self.cells.get(cell_of(lat, lon))
+        if not found:
+            return []
+        return [p for p in found if p[2] == kind and dist_m(lat, lon, p[0], p[1]) <= SAME_BIN_M]
+
+
+def apply_shared(osm_bins, shared):
+    """Merge rules OSM <-> shared bins (docs/spec-server.md, Etappe B).
+
+    osm_bins: list of (lat, lon, dog); shared: list of (id, lat, lon, kind, confirmed).
+    Returns (kept OSM bins, ids of unconfirmed shared bins to delete).
+    """
+    confirmed = NearIndex([(lat, lon, kind) for _, lat, lon, kind, c in shared if c])
+    kept = [b for b in osm_bins if not confirmed.near(b[0], b[1], kind_of(b[2]))]
+    unconfirmed = [(lat, lon, kind, sid) for sid, lat, lon, kind, c in shared if not c]
+    doomed = set()
+    if unconfirmed:
+        index = NearIndex(unconfirmed)
+        for lat, lon, dog in kept:
+            for p in index.near(lat, lon, kind_of(dog)):
+                doomed.add(p[3])
+    return kept, sorted(doomed)
+
+
+def write_delete_sql(path, ids):
+    with open(path, "w") as f:
+        for k in range(0, len(ids), DELETE_CHUNK):
+            chunk = ids[k:k + DELETE_CHUNK]
+            # confirmed = 0 again: a bin confirmed since the export stays.
+            f.write("DELETE FROM bins WHERE confirmed = 0 AND id IN (%s);\n" % ",".join(map(str, chunk)))
 
 
 class Builder:
@@ -132,11 +265,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("extracts", nargs="+")
     parser.add_argument("--out", required=True, help="web root, e.g. server/public")
+    parser.add_argument("--shared", help="shared bins: JSON of wrangler d1 execute --json (optional)")
+    parser.add_argument("--delete-sql", help="write DELETE statements for redundant unconfirmed shared bins")
     args = parser.parse_args()
 
     # Deduplicate bins that appear in several (overlapping) extracts.
     seen = set()
-    roots = {}
+    osm_bins = []
     for pbf in args.extracts:
         print("reading", pbf, file=sys.stderr)
         for lat, lon, dog in read_bins(pbf):
@@ -144,7 +279,23 @@ def main():
             if key in seen:
                 continue
             seen.add(key)
-            roots.setdefault(root_of(lat, lon), []).append((lat, lon, dog))
+            osm_bins.append((lat, lon, dog))
+
+    doomed = []
+    if args.shared:
+        shared = load_shared(args.shared)
+        if shared is not None:
+            before = len(osm_bins)
+            osm_bins, doomed = apply_shared(osm_bins, shared)
+            print("shared bins: %d (%d confirmed); OSM bins left out: %d; unconfirmed shared to delete: %d"
+                  % (len(shared), sum(1 for s in shared if s[4]), before - len(osm_bins), len(doomed)),
+                  file=sys.stderr)
+    if args.delete_sql:
+        write_delete_sql(args.delete_sql, doomed)
+
+    roots = {}
+    for b in osm_bins:
+        roots.setdefault(root_of(b[0], b[1]), []).append(b)
 
     target = os.path.join(args.out, VERSION)
     if os.path.isdir(target):
@@ -156,7 +307,7 @@ def main():
     meta = {
         "v": 1,
         "date": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"),
-        "bins": len(seen),
+        "bins": len(osm_bins),
         "roots": len(roots),
         "leaves": builder.leaves,
         "maxLeafBytes": builder.max_bytes,

@@ -21,7 +21,7 @@ Ergebnis des Grilling-Interviews (November 2026). Begriffe siehe [GLOSSARY.md](.
 
 - **LAP (kurz)** legt auf jeder Spaziergang-Seite sofort einen Sack ab (ADR 0005). Sonst bleibt LAP „zurück“: in Menüs, im Erkunden-Modus der Karte, auf dem Alarmbildschirm (blendet ihn aus), am Startbildschirm (App verlassen). Wischen nach rechts legt keinen Sack ab.
 - **MENU halten** (lange auf UP) öffnet das kontextabhängige Aktionsmenü, oberster Eintrag vorausgewählt:
-  - normal: *Sack ablegen* · *Mülleimer hinzufügen* · *Mülleimer entfernen* · *Offene Sackdepots* · *Karte erkunden*
+  - normal: *Sack ablegen* · *Mülleimer anlegen* · *Hundekot-Behälter anlegen* · *Mülleimer entfernen* · *Offene Sackdepots* · *Karte erkunden*
   - innerhalb 30 s nach dem Ablegen: *Ablegen rückgängig* zuoberst
   - Rückweg-Alarm ausgelöst: *Aufgehoben* zuoberst
   - Sack aufgehoben, nicht entsorgt: *Entsorgt* zuoberst
@@ -56,11 +56,11 @@ Ergebnis des Grilling-Interviews (November 2026). Begriffe siehe [GLOSSARY.md](.
 
 ## Mülleimer
 
-- **Eigene Mülleimer**: *Mülleimer hinzufügen* speichert die aktuelle Position ohne Namen. Gibt es in 10 m Umkreis schon einen Mülleimer: „Hier gibt es schon einen Mülleimer – trotzdem speichern?“ (Nein vorausgewählt).
+- **Eigene Mülleimer**: *Mülleimer anlegen* bzw. *Hundekot-Behälter anlegen* speichert die aktuelle Position mit dieser Art, ohne Namen; mit „Teilen“ wird daraus ein geteilter Mülleimer (ADR 0006, docs/spec-server.md). Gibt es in 8 m Umkreis schon einen Mülleimer derselben Art: „Hier gibt es schon einen Mülleimer – trotzdem speichern?“ (Nein vorausgewählt).
 - **OSM-Mülleimer**: über das gekoppelte Handy von der öffentlichen Overpass API geladen (ADR 0004), Umkreis 1 km um den Start, Nachladen beim Verlassen des geladenen Gebiets, lokal zwischengespeichert, 30 Tage gültig. Abfrage mit auf ca. 500 m gerundeten Koordinaten. Ohne Verbindung: gespeicherter Stand, dezenter Hinweis.
   - Zählen: allgemeine öffentliche Mülleimer und Hundekot-Behälter; keine großen Container/Müllinseln.
   - Technik: Overpass liefert alle Koordinaten als ein kompakter Text je Art (~22 Byte pro Mülleimer, 1350 Mülleimer = 30 KB). Ist die Antwort für die Uhr zu groß, wird mit 600 m bzw. 400 m Radius neu angefragt. Overpass verlangt einen eigenen User-Agent (sonst HTTP 406). Die öffentlichen Server sind oft überlastet (30–45 s Antwortzeit, 502/504): Nach einem Fehler wird nach 10 s der nächste Server versucht (overpass-api.de, lz4.overpass-api.de, overpass.private.coffee, overpass.kumi.systems), nach einer erfolglosen Runde erst nach 2 Minuten. Der letzte Fehlercode steht auf der Mülleimer-Führung („Mülleimer offline (-300)“). Zusammenführen, Nahbereich und Kartenmarker laufen in getrennten Callbacks (Watchdog).
-- *Mülleimer entfernen*: drei nächste Mülleimer mit Distanz; eigene werden gelöscht, OSM-Mülleimer ausgeblendet.
+- *Mülleimer entfernen*: drei nächste Mülleimer mit Distanz und Art; eigene unbestätigte werden gelöscht, alle anderen gemeldet (auf der eigenen Uhr sofort weg, für alle nach 2 Meldungen).
 
 ## Seiten
 

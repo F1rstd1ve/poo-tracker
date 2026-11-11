@@ -58,7 +58,8 @@ module OsmLoader {
             status = STATUS_IDLE;
             return;
         }
-        if (busy) {
+        // One request at a time (OSM, geteilte Ebene, Beiträge).
+        if (busy || SharedLoader.busy || ShareQueue.busy) {
             return;
         }
         var p = Bins.degrees(here);
@@ -69,6 +70,7 @@ module OsmLoader {
         var tiles = TileLoader.check(p[0], p[1], canRequest);
         if (tiles == TileLoader.DONE) {
             status = STATUS_OK;
+            shareStep(p, canRequest);
             return;
         }
         if (tiles == TileLoader.REQUESTED) {
@@ -84,6 +86,7 @@ module OsmLoader {
         // Outside the Gassi-Server coverage: Overpass.
         if (Bins.areaCovers(p[0], p[1])) {
             status = STATUS_OK;
+            shareStep(p, canRequest);
             return;
         }
         if (now - lastFailure < retryAfter) {
@@ -99,6 +102,13 @@ module OsmLoader {
         reqLon = (Math.round(p[1] / lonGrid) * lonGrid).toFloat();
         radiusIndex = 0;
         request();
+    }
+
+    // OSM bins complete: geteilte Ebene, then send waiting Beiträge (ADR 0006).
+    function shareStep(p as Array<Float>, canRequest as Boolean) as Void {
+        if (SharedLoader.check(p[0], p[1], canRequest) == SharedLoader.DONE) {
+            ShareQueue.flush(canRequest);
+        }
     }
 
     function noPhone(now as Number) as Void {

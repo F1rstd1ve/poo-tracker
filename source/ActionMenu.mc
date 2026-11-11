@@ -30,6 +30,7 @@ module ActionMenu {
         }
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.DropBag, null, :dropBag, null));
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.AddBin, null, :addBin, null));
+        menu.addItem(new WatchUi.MenuItem(Rez.Strings.AddDogBin, null, :addDogBin, null));
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.RemoveBin, null, :removeBin, null));
         if (openCount > 0) {
             menu.addItem(new WatchUi.MenuItem(Rez.Strings.OpenDepots, Format.bags(openCount), :openDepots, null));
@@ -68,7 +69,9 @@ class ActionMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :dropBag) {
             DropBag.start();
         } else if (id == :addBin) {
-            BinActions.startAdd();
+            BinActions.startAdd(Bins.KIND_GENERAL);
+        } else if (id == :addDogBin) {
+            BinActions.startAdd(Bins.KIND_DOG);
         } else if (id == :removeBin) {
             BinActions.openRemoveMenu();
         } else if (id == :openDepots) {

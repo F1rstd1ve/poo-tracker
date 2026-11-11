@@ -44,6 +44,12 @@
     <string id="AgeDays">$1$ days ago</string>
     <!-- Bins (step 5) -->
     <string id="AddBin">Add bin</string>
+    <string id="AddDogBin">Add dog-waste bin</string>
+    <string id="DogBinSaved">Dog-waste bin saved</string>
+    <string id="KindGeneral">Bin</string>
+    <string id="Unconfirmed">unconfirmed</string>
+    <string id="BinReported">Bin reported</string>
+    <string id="ShareStatus">Shared: $1$ · waiting: $2$</string>
     <string id="RemoveBin">Remove bin</string>
     <string id="BinSaved">Bin saved</string>
     <string id="BinExists">Already a bin here</string>

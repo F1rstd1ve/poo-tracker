@@ -8,15 +8,23 @@ import Toybox.Time;
 class Bin {
     var lat as Float;
     var lon as Float;
+    // Bins.KIND_GENERAL or Bins.KIND_DOG
     var kind as Number;
-    // Where it lives: >= 0 index into the OSM arrays, < 0 own bin -(index + 1).
+    // Bins.ORIGIN_OSM / ORIGIN_OWN / ORIGIN_SHARED
+    var origin as Number;
+    // Index into the arrays of its origin.
     var src as Number;
+    // OSM bins count as confirmed.
+    var confirmed as Boolean;
 
-    function initialize(lat as Float, lon as Float, kind as Number, src as Number) {
+    function initialize(lat as Float, lon as Float, kind as Number, origin as Number, src as Number,
+            confirmed as Boolean) {
         self.lat = lat;
         self.lon = lon;
         self.kind = kind;
+        self.origin = origin;
         self.src = src;
+        self.confirmed = confirmed;
     }
 
     function location() as Position.Location {
@@ -24,16 +32,31 @@ class Bin {
     }
 }
 
-// All known Mülleimer: eigene Mülleimer + OSM-Mülleimer (ADR 0004).
+// All known Mülleimer (ADR 0004, 0006):
+//  - own: bins this watch added, with kind, Server-Kennung (0 = not shared yet),
+//    confirmed flag and a local reference number for the Beitrag queue
+//  - shared: geteilte Mülleimer of other users, per 0.4° root from the
+//    Gassi-Server (SharedLoader), replaced per root
+//  - OSM: from the Mülleimer-Kacheln or Overpass
 // Stored as flat Float arrays (compact in Application.Storage, < 32 KB per key).
 // Per-fix work only touches the "nearby" cache (bins within 600 m), which is
 // rebuilt after moving 100 m or after a change. Distances use a local flat
 // approximation, accurate to well under 1 % at these ranges.
 module Bins {
 
-    const KIND_OWN = 0;
+    const KIND_GENERAL = 1;
+    const KIND_DOG = 2;
+    // Kinds as delivered by the OSM loaders (same values).
     const KIND_OSM = 1;
     const KIND_OSM_DOG = 2;
+
+    const ORIGIN_OSM = 0;
+    const ORIGIN_OWN = 1;
+    const ORIGIN_SHARED = 2;
+
+    // Same bin: same kind and at most this far apart (ADR 0006).
+    const SAME_BIN_M = 8.0;
+    const MAX_SHARED = 1500;
 
     const MAX_OSM = 4000;
     const NEARBY_RADIUS_M = 600.0;
@@ -45,6 +68,20 @@ module Bins {
 
     var ownLat as Array<Float> = [] as Array<Float>;
     var ownLon as Array<Float> = [] as Array<Float>;
+    var ownKind as Array<Number> = [] as Array<Number>;
+    var ownSid as Array<Number> = [] as Array<Number>;
+    var ownConf as Array<Number> = [] as Array<Number>;
+    var ownRef as Array<Number> = [] as Array<Number>;
+    var nextRef as Number = 1;
+
+    var shLat as Array<Float> = [] as Array<Float>;
+    var shLon as Array<Float> = [] as Array<Float>;
+    var shKind as Array<Number> = [] as Array<Number>;
+    var shConf as Array<Number> = [] as Array<Number>;
+    var shSid as Array<Number> = [] as Array<Number>;
+    var shRoot as Array<String> = [] as Array<String>;
+    // Geteilte Mülleimer this watch reported: never shown again here.
+    var shGone as Array<Number> = [] as Array<Number>;
     var osmLat as Array<Float> = [] as Array<Float>;
     var osmLon as Array<Float> = [] as Array<Float>;
     var osmKind as Array<Number> = [] as Array<Number>;
@@ -77,6 +114,41 @@ module Bins {
             ownLat = [] as Array<Float>;
             ownLon = [] as Array<Float>;
         }
+        ownKind = numbers("own_kind");
+        ownSid = numbers("own_sid");
+        ownConf = numbers("own_conf");
+        ownRef = numbers("own_ref");
+        var n = Application.Storage.getValue("own_next");
+        nextRef = n instanceof Number ? n : 1;
+        if (ownKind.size() != ownLat.size() || ownSid.size() != ownLat.size()
+                || ownConf.size() != ownLat.size() || ownRef.size() != ownLat.size()) {
+            // Before Etappe B own bins had no kind: general bins, not shared yet.
+            ownKind = [] as Array<Number>;
+            ownSid = [] as Array<Number>;
+            ownConf = [] as Array<Number>;
+            ownRef = [] as Array<Number>;
+            for (var i = 0; i < ownLat.size(); i++) {
+                ownKind.add(KIND_GENERAL);
+                ownSid.add(0);
+                ownConf.add(0);
+                ownRef.add(nextRef);
+                nextRef++;
+            }
+            persistOwn();
+        }
+
+        shLat = floats("sh_lat");
+        shLon = floats("sh_lon");
+        shKind = numbers("sh_kind");
+        shConf = numbers("sh_conf");
+        shSid = numbers("sh_sid");
+        var r = Application.Storage.getValue("sh_root");
+        shRoot = r instanceof Array ? r as Array<String> : [] as Array<String>;
+        shGone = numbers("sh_gone");
+        var c = shLat.size();
+        if (shLon.size() != c || shKind.size() != c || shConf.size() != c || shSid.size() != c || shRoot.size() != c) {
+            clearShared();
+        }
         if (osmLat.size() != osmLon.size() || osmLat.size() != osmKind.size()) {
             osmLat = [] as Array<Float>;
             osmLon = [] as Array<Float>;
@@ -91,9 +163,50 @@ module Bins {
         return v instanceof Array ? v as Array<Float> : [] as Array<Float>;
     }
 
+    function numbers(key as String) as Array<Number> {
+        var v = Application.Storage.getValue(key);
+        return v instanceof Array ? v as Array<Number> : [] as Array<Number>;
+    }
+
     function persistOwn() as Void {
         Application.Storage.setValue("own_lat", ownLat as Application.PropertyValueType);
         Application.Storage.setValue("own_lon", ownLon as Application.PropertyValueType);
+        Application.Storage.setValue("own_kind", ownKind as Application.PropertyValueType);
+        Application.Storage.setValue("own_sid", ownSid as Application.PropertyValueType);
+        Application.Storage.setValue("own_conf", ownConf as Application.PropertyValueType);
+        Application.Storage.setValue("own_ref", ownRef as Application.PropertyValueType);
+        Application.Storage.setValue("own_next", nextRef);
+    }
+
+    function persistShared() as Void {
+        Application.Storage.setValue("sh_lat", shLat as Application.PropertyValueType);
+        Application.Storage.setValue("sh_lon", shLon as Application.PropertyValueType);
+        Application.Storage.setValue("sh_kind", shKind as Application.PropertyValueType);
+        Application.Storage.setValue("sh_conf", shConf as Application.PropertyValueType);
+        Application.Storage.setValue("sh_sid", shSid as Application.PropertyValueType);
+        Application.Storage.setValue("sh_root", shRoot as Application.PropertyValueType);
+        Application.Storage.setValue("sh_gone", shGone as Application.PropertyValueType);
+    }
+
+    function clearShared() as Void {
+        shLat = [] as Array<Float>;
+        shLon = [] as Array<Float>;
+        shKind = [] as Array<Number>;
+        shConf = [] as Array<Number>;
+        shSid = [] as Array<Number>;
+        shRoot = [] as Array<String>;
+    }
+
+    function ownBin(i as Number) as Bin {
+        return new Bin(ownLat[i], ownLon[i], ownKind[i], ORIGIN_OWN, i, ownConf[i] == 1);
+    }
+
+    function sharedBin(i as Number) as Bin {
+        return new Bin(shLat[i], shLon[i], shKind[i], ORIGIN_SHARED, i, shConf[i] == 1);
+    }
+
+    function osmBin(i as Number) as Bin {
+        return new Bin(osmLat[i], osmLon[i], osmKind[i], ORIGIN_OSM, i, true);
     }
 
     function persistOsm() as Void {
@@ -152,12 +265,17 @@ module Bins {
         var list = [] as Array<Bin>;
         for (var i = 0; i < ownLat.size(); i++) {
             if ((ownLat[i] - lat).abs() <= dLat && (ownLon[i] - lon).abs() <= dLon) {
-                list.add(new Bin(ownLat[i], ownLon[i], KIND_OWN, -(i + 1)));
+                list.add(ownBin(i));
+            }
+        }
+        for (var i = 0; i < shLat.size(); i++) {
+            if ((shLat[i] - lat).abs() <= dLat && (shLon[i] - lon).abs() <= dLon) {
+                list.add(sharedBin(i));
             }
         }
         for (var i = 0; i < osmLat.size(); i++) {
             if ((osmLat[i] - lat).abs() <= dLat && (osmLon[i] - lon).abs() <= dLon) {
-                list.add(new Bin(osmLat[i], osmLon[i], osmKind[i], i));
+                list.add(osmBin(i));
             }
         }
         nearby = list;
@@ -184,7 +302,7 @@ module Bins {
                 best = b;
                 bestD = d;
             }
-            if (b.kind == KIND_OSM_DOG && (dog == null || d < dogD)) {
+            if (b.kind == KIND_DOG && (dog == null || d < dogD)) {
                 dog = b;
                 dogD = d;
             }
@@ -201,19 +319,38 @@ module Bins {
     function nearestAnywhere(lat as Float, lon as Float) as Bin? {
         var best = null;
         var bestD = 0.0;
+        var bestOrigin = -1;
+        var bestIndex = 0;
         for (var i = 0; i < ownLat.size(); i++) {
             var d = dist(lat, lon, ownLat[i], ownLon[i]);
-            if (best == null || d < bestD) {
-                best = new Bin(ownLat[i], ownLon[i], KIND_OWN, -(i + 1));
+            if (bestOrigin < 0 || d < bestD) {
+                bestOrigin = ORIGIN_OWN;
+                bestIndex = i;
+                bestD = d;
+            }
+        }
+        for (var i = 0; i < shLat.size(); i++) {
+            var d = dist(lat, lon, shLat[i], shLon[i]);
+            if (bestOrigin < 0 || d < bestD) {
+                bestOrigin = ORIGIN_SHARED;
+                bestIndex = i;
                 bestD = d;
             }
         }
         for (var i = 0; i < osmLat.size(); i++) {
             var d = dist(lat, lon, osmLat[i], osmLon[i]);
-            if (best == null || d < bestD) {
-                best = new Bin(osmLat[i], osmLon[i], osmKind[i], i);
+            if (bestOrigin < 0 || d < bestD) {
+                bestOrigin = ORIGIN_OSM;
+                bestIndex = i;
                 bestD = d;
             }
+        }
+        if (bestOrigin == ORIGIN_OWN) {
+            best = ownBin(bestIndex);
+        } else if (bestOrigin == ORIGIN_SHARED) {
+            best = sharedBin(bestIndex);
+        } else if (bestOrigin == ORIGIN_OSM) {
+            best = osmBin(bestIndex);
         }
         return best;
     }
@@ -274,46 +411,205 @@ module Bins {
         return bins;
     }
 
-    function hasBinWithin(lat as Float, lon as Float, radius as Float) as Boolean {
+    // Nearest bin of `kind` within `radius` (nearby cache), or null.
+    function sameKindWithin(lat as Float, lon as Float, kind as Number, radius as Float) as Bin? {
+        var best = null;
+        var bestD = radius;
         for (var i = 0; i < nearby.size(); i++) {
-            if (dist(lat, lon, nearby[i].lat, nearby[i].lon) <= radius) {
-                return true;
+            var b = nearby[i];
+            if (b.kind != kind) {
+                continue;
+            }
+            var d = dist(lat, lon, b.lat, b.lon);
+            if (d <= bestD) {
+                best = b;
+                bestD = d;
             }
         }
-        return false;
+        return best;
     }
 
     // --- changes --------------------------------------------------------------
 
-    function addOwn(loc as Position.Location) as Void {
+    // Adds an own bin and returns its local reference number.
+    function addOwn(loc as Position.Location, kind as Number) as Number {
         var p = degrees(loc);
+        var ref = nextRef;
+        nextRef++;
         ownLat.add(p[0]);
         ownLon.add(p[1]);
+        ownKind.add(kind);
+        ownSid.add(0);
+        ownConf.add(0);
+        ownRef.add(ref);
         persistOwn();
         rebuildNearby(p[0], p[1]);
+        return ref;
     }
 
-    // Own bins are deleted, OSM bins hidden on this watch only.
+    // Own bins are deleted, geteilte and OSM bins disappear on this watch
+    // (the Meldung for everyone is sent by BinActions).
     function remove(bin as Bin) as Void {
-        if (bin.src < 0) {
-            var i = -bin.src - 1;
+        var i = bin.src;
+        if (bin.origin == ORIGIN_OWN) {
             ownLat = without(ownLat, i) as Array<Float>;
             ownLon = without(ownLon, i) as Array<Float>;
+            ownKind = without(ownKind, i) as Array<Number>;
+            ownSid = without(ownSid, i) as Array<Number>;
+            ownConf = without(ownConf, i) as Array<Number>;
+            ownRef = without(ownRef, i) as Array<Number>;
             persistOwn();
+        } else if (bin.origin == ORIGIN_SHARED) {
+            shGone.add(shSid[i]);
+            removeShared(i);
+            persistShared();
         } else {
-            var i = bin.src;
             hiddenKeys.add(key(osmLat[i], osmLon[i]));
-            osmLat = without(osmLat, i) as Array<Float>;
-            osmLon = without(osmLon, i) as Array<Float>;
-            osmKind = without(osmKind, i) as Array<Number>;
+            removeOsm(i);
             persistOsm();
         }
+        refresh();
+    }
+
+    function removeShared(i as Number) as Void {
+        shLat = without(shLat, i) as Array<Float>;
+        shLon = without(shLon, i) as Array<Float>;
+        shKind = without(shKind, i) as Array<Number>;
+        shConf = without(shConf, i) as Array<Number>;
+        shSid = without(shSid, i) as Array<Number>;
+        shRoot = without(shRoot, i) as Array<String>;
+    }
+
+    function removeOsm(i as Number) as Void {
+        osmLat = without(osmLat, i) as Array<Float>;
+        osmLon = without(osmLon, i) as Array<Float>;
+        osmKind = without(osmKind, i) as Array<Number>;
+    }
+
+    // Rebuild the nearby cache at the last position after a change.
+    function refresh() as Void {
         dirty = true;
         var cLat = nearbyLat;
         var cLon = nearbyLon;
         if (cLat != null && cLon != null) {
             rebuildNearby(cLat, cLon);
         }
+    }
+
+    function ownIndex(ref as Number) as Number {
+        return ownRef.indexOf(ref);
+    }
+
+    // The Gassi-Server stored an own bin: remember its Server-Kennung. If it
+    // confirmed an existing geteilter Mülleimer, that one is now ours.
+    function setOwnSid(ref as Number, sid as Number, confirmed as Boolean) as Void {
+        var i = ownRef.indexOf(ref);
+        if (i < 0) {
+            return;
+        }
+        ownSid[i] = sid;
+        ownConf[i] = confirmed ? 1 : 0;
+        persistOwn();
+        var j = shSid.indexOf(sid);
+        if (j >= 0) {
+            removeShared(j);
+            persistShared();
+        }
+        refresh();
+    }
+
+    // "Entsorgt" at a geteilter Mülleimer of another user (Beitrag sent by Disposal).
+    function confirmShared(i as Number) as Void {
+        shConf[i] = 1;
+        persistShared();
+        refresh();
+    }
+
+    // Fresh geteilte Ebene of one root: replaces its geteilte Mülleimer and
+    // hides OSM bins that were reported by 2 users (hLat/hLon/hKind).
+    function mergeShared(root as String, lat as Array<Float>, lon as Array<Float>, kind as Array<Number>,
+            conf as Array<Number>, sid as Array<Number>,
+            hLat as Array<Float>, hLon as Array<Float>, hKind as Array<Number>) as Void {
+        var keep = [] as Array<Number>;
+        for (var i = 0; i < shRoot.size(); i++) {
+            if (!shRoot[i].equals(root)) {
+                keep.add(i);
+            }
+        }
+        var la = [] as Array<Float>;
+        var lo = [] as Array<Float>;
+        var ki = [] as Array<Number>;
+        var co = [] as Array<Number>;
+        var si = [] as Array<Number>;
+        var ro = [] as Array<String>;
+        for (var k = 0; k < keep.size(); k++) {
+            var i = keep[k];
+            la.add(shLat[i]);
+            lo.add(shLon[i]);
+            ki.add(shKind[i]);
+            co.add(shConf[i]);
+            si.add(shSid[i]);
+            ro.add(shRoot[i]);
+        }
+        var ownChanged = false;
+        for (var i = 0; i < lat.size() && la.size() < MAX_SHARED; i++) {
+            var own = ownSid.indexOf(sid[i]);
+            if (own >= 0) {
+                // Our own bin: only take over "bestätigt".
+                if (ownConf[own] != conf[i]) {
+                    ownConf[own] = conf[i];
+                    ownChanged = true;
+                }
+                continue;
+            }
+            if (shGone.indexOf(sid[i]) >= 0) {
+                continue;
+            }
+            la.add(lat[i]);
+            lo.add(lon[i]);
+            ki.add(kind[i]);
+            co.add(conf[i]);
+            si.add(sid[i]);
+            ro.add(root);
+        }
+        shLat = la;
+        shLon = lo;
+        shKind = ki;
+        shConf = co;
+        shSid = si;
+        shRoot = ro;
+        persistShared();
+        if (ownChanged) {
+            persistOwn();
+        }
+
+        var osmChanged = false;
+        for (var h = 0; h < hLat.size(); h++) {
+            cosLat = Math.cos(Math.toRadians(hLat[h])).toFloat();
+            for (var i = osmLat.size() - 1; i >= 0; i--) {
+                if (osmKind[i] == hKind[h] && (osmLat[i] - hLat[h]).abs() < 0.0001
+                        && dist(hLat[h], hLon[h], osmLat[i], osmLon[i]) <= 3.0) {
+                    hiddenKeys.add(key(osmLat[i], osmLon[i]));
+                    removeOsm(i);
+                    osmChanged = true;
+                }
+            }
+        }
+        if (osmChanged) {
+            persistOsm();
+        }
+        refresh();
+    }
+
+    // Own bins the Gassi-Server knows.
+    function sharedOwnCount() as Number {
+        var n = 0;
+        for (var i = 0; i < ownSid.size(); i++) {
+            if (ownSid[i] != 0) {
+                n++;
+            }
+        }
+        return n;
     }
 
     function without(arr as Array, index as Number) as Array {
@@ -421,6 +717,6 @@ module Bins {
     }
 
     function count() as Number {
-        return ownLat.size() + osmLat.size();
+        return ownLat.size() + shLat.size() + osmLat.size();
     }
 }

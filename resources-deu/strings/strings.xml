@@ -43,7 +43,13 @@
     <string id="AgeHours">vor $1$ Std.</string>
     <string id="AgeDays">vor $1$ Tagen</string>
     <!-- Mülleimer (Schritt 5) -->
-    <string id="AddBin">Mülleimer hinzufügen</string>
+    <string id="AddBin">Mülleimer anlegen</string>
+    <string id="AddDogBin">Hundekot-Behälter anlegen</string>
+    <string id="DogBinSaved">Hundekot-Behälter gespeichert</string>
+    <string id="KindGeneral">Mülleimer</string>
+    <string id="Unconfirmed">unbestätigt</string>
+    <string id="BinReported">Mülleimer gemeldet</string>
+    <string id="ShareStatus">Geteilt: $1$ · wartend: $2$</string>
     <string id="RemoveBin">Mülleimer entfernen</string>
     <string id="BinSaved">Mülleimer gespeichert</string>
     <string id="BinExists">Schon ein Mülleimer hier</string>
