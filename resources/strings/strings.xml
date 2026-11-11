@@ -56,6 +56,9 @@
     <string id="KindOsm">Bin (OSM)</string>
     <string id="KindDog">Dog-waste bin</string>
     <string id="BinGuideTitle">BINS</string>
+    <string id="GuideDepot">Bag drop</string>
+    <string id="GuideDepots">Bag drops: nearest</string>
+    <string id="GuideBinDist">Bin $1$</string>
     <string id="NoBinKnown">No bin known</string>
     <string id="OsmLoading">Loading bins...</string>
     <string id="OsmOffline">Bins offline</string>

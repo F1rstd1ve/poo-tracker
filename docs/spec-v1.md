@@ -26,7 +26,8 @@ Ergebnis des Grilling-Interviews (November 2026). Begriffe siehe [GLOSSARY.md](.
   - Rückweg-Alarm ausgelöst: *Aufgehoben* zuoberst
   - Sack aufgehoben, nicht entsorgt: *Entsorgt* zuoberst
   - innerhalb 30 s nach automatischem „Entsorgt“: *Entsorgen rückgängig*
-- **START** bleibt überall Pause/Stopp.
+- **START** bleibt überall Pause/Stopp. Stopp-Bildschirm wie bei Garmin: System-Menü mit rotem Theme, Zeit als Titel, *Weiter / Speichern / Verwerfen* mit Symbolen (ADR 0007; *Später fortsetzen* ist für Connect-IQ-Apps nicht möglich).
+- **Touch** startet, pausiert oder legt nie etwas ab (ADR 0007). Auf der Kartenseite öffnet Tippen *Erkunden*; dort steuert die Garmin-Karte (Verschieben, Zoomen), BACK kehrt zu *Folgen* zurück.
 - **UP/DOWN** blättern: Datenseite 1–3 → Mülleimer-Führung → Kartenseite.
 - Es gibt keine Runden.
 
@@ -64,7 +65,7 @@ Ergebnis des Grilling-Interviews (November 2026). Begriffe siehe [GLOSSARY.md](.
 ## Seiten
 
 - **Datenseiten** (ADR 0003): bis zu 3, je Layout mit 1–4 Feldern, einzeln ein-/ausschaltbar. Felder: Zeit, Distanz, Tempo, Ø Tempo, Puls, Ø Puls, Höhe, Anstieg, Kalorien, Schritte, Uhrzeit, Offene Sackdepots, Distanz zum nächsten Sackdepot, Distanz zum nächsten Mülleimer.
-- **Mülleimer-Führung**: Pfeil (Kompass, ersatzweise GPS-Kurs) und Luftlinien-Distanz zum nächsten Mülleimer, laufend neu berechnet; Hundekot-Behälter werden bei ±20 m bevorzugt. Alle Mülleimer im Umkreis von 100 m als kleine Randmarker. Abschaltbar.
+- **Mülleimer-Führung**: Pfeil (Kompass, ersatzweise GPS-Kurs) und Luftlinien-Distanz zum nächsten Mülleimer, laufend neu berechnet; Hundekot-Behälter werden bei ±20 m bevorzugt. Alle Mülleimer im Umkreis von 100 m als kleine Randmarker. Offene Sackdepots haben Vorrang: jedes als roter Randmarker, und solange eines offen ist, zeigt der große Pfeil rot zum nächsten Sackdepot (Distanz darunter); der Ziel-Mülleimer bleibt als markierter Randpunkt mit Distanz in der untersten Zeile. Abschaltbar.
 - **Kartenseite**: Position, eigene Strecke, Sackdepots, Mülleimer und Hundekot-Behälter mit eigenen Symbolen. Modus *Folgen* (feste Zoomstufe ≈ 300 m; *nicht umgesetzt:* „zuletzt gewählte Zoomstufe merken“ – die Garmin-Karten-API liefert die aktuelle Zoomstufe nicht zurück); Antippen oder *Karte erkunden* öffnet die Garmin-Standardsteuerung (*Erkunden*), BACK kehrt zurück. Abschaltbar.
 
 ## Einstellungen (Connect-IQ-Handy-App)

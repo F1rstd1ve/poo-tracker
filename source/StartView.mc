@@ -98,44 +98,37 @@ class StartView extends WatchUi.View {
     }
 }
 
-// START begins the Spaziergang; BACK leaves the app.
+// START begins the Spaziergang (a tap never does); BACK leaves the app.
 class StartDelegate extends WatchUi.BehaviorDelegate {
 
     function initialize() {
         BehaviorDelegate.initialize();
     }
 
-    // START arrives as raw key or as "select" (see StartKey).
+    function onKeyPressed(keyEvent as WatchUi.KeyEvent) as Boolean {
+        KeyGuard.notePress(keyEvent.getKey());
+        return false;
+    }
+
+    // Devices that deliver START as a raw key instead of "select".
     function onKey(keyEvent as WatchUi.KeyEvent) as Boolean {
         if (keyEvent.getKey() == WatchUi.KEY_ENTER) {
-            if (StartKey.accept()) {
-                begin();
-            }
+            KeyGuard.rawStart(method(:begin));
             return true;
         }
         return false;
     }
 
-    // Lets LapKey know that raw key presses are delivered on this device.
-    function onKeyPressed(keyEvent as WatchUi.KeyEvent) as Boolean {
-        LapKey.notePress(keyEvent.getKey());
-        return false;
-    }
-
     function onSelect() as Boolean {
-        if (StartKey.acceptSelect()) {
-            begin();
-        }
+        KeyGuard.select(method(:begin), null);
         return true;
     }
 
-    // A tap alone never starts the walk.
     function onTap(clickEvent as WatchUi.ClickEvent) as Boolean {
-        StartKey.noteTap();
         return true;
     }
 
-    private function begin() as Void {
+    function begin() as Void {
         if (WalkSession.hasStarted()) {
             return;
         }

@@ -7,9 +7,13 @@ import Toybox.WatchUi;
 // Mülleimer-Führung: big compass arrow + distance to the target bin (nearest,
 // Hundekot-Behälter preferred within +20 m); every bin within 100 m as a small
 // marker at the screen edge in its direction.
+// Open Sackdepots come first: each is a red marker at the edge, and while one
+// is open the big arrow turns red and points to the nearest one; the target
+// bin then stays highlighted at the edge with its distance below.
 class BinGuideView extends WatchUi.View {
 
     private const EDGE_RADIUS_M = 100.0;
+    private const DEPOT_RED = 0xE5202E;
 
     private var _timer as Timer.Timer?;
 
@@ -56,6 +60,7 @@ class BinGuideView extends WatchUi.View {
         var p = Bins.degrees(here);
         var heading = Heading.current();
         var target = Bins.target(p[0], p[1]);
+        var depot = DepotStore.nearest(here, DepotStore.STATE_OPEN);
 
         // Edge markers for all bins within 100 m
         var ring = (w / 2 - 14).toFloat();
@@ -74,7 +79,35 @@ class BinGuideView extends WatchUi.View {
             }
         }
 
-        if (target == null) {
+        // Edge markers for all open Sackdepots, drawn above the bins
+        var open = DepotStore.inState(DepotStore.STATE_OPEN);
+        for (var i = 0; i < open.size(); i++) {
+            var a = GeoUtil.bearing(here, DepotStore.location(open[i])) - heading;
+            var x = (cx + ring * Math.sin(a)).toNumber();
+            var y = (cy - ring * Math.cos(a)).toNumber();
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(x, y, 10);
+            dc.setColor(DEPOT_RED, Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(x, y, 8);
+        }
+
+        var binLine = null;
+        if (depot != null) {
+            var loc = DepotStore.location(depot);
+            Draw.arrow(dc, cx, (h * 0.46).toNumber(), (w * 0.17).toNumber(),
+                GeoUtil.bearing(here, loc) - heading, DEPOT_RED);
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(cx, h * 0.69, Graphics.FONT_LARGE, Format.shortDistance(GeoUtil.distance(here, loc)),
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            dc.setColor(DEPOT_RED, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(cx, h * 0.8, Graphics.FONT_XTINY,
+                WatchUi.loadResource(open.size() == 1 ? Rez.Strings.GuideDepot : Rez.Strings.GuideDepots) as String,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            if (target != null) {
+                binLine = Lang.format(WatchUi.loadResource(Rez.Strings.GuideBinDist) as String,
+                    [Format.shortDistance(Bins.dist(p[0], p[1], target.lat, target.lon))]);
+            }
+        } else if (target == null) {
             centerText(dc, cx, cy, Rez.Strings.NoBinKnown, Graphics.COLOR_LT_GRAY);
         } else {
             var angle = Bins.bearing(p[0], p[1], target) - heading;
@@ -97,6 +130,11 @@ class BinGuideView extends WatchUi.View {
             status = Rez.Strings.OsmLoading;
         } else if (OsmLoader.status == OsmLoader.STATUS_OFFLINE) {
             status = Rez.Strings.OsmOffline;
+        }
+        if (status == null && binLine != null) {
+            dc.setColor(kindColor((target as Bin).kind), Graphics.COLOR_TRANSPARENT);
+            dc.drawText(cx, h * 0.89, Graphics.FONT_XTINY, binLine,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
         if (status != null) {
             var text = WatchUi.loadResource(status) as String;

@@ -1,72 +1,88 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-// Input on every page of a running Spaziergang.
+// Input on every page of a running Spaziergang, like the official apps:
 //  START     -> pause (opens the pause menu) / resume when paused
-//  LAP       -> Sack ablegen at once (ADR 0005); on the map while exploring:
-//               back to follow. A swipe to the right does nothing (LapKey).
+//  LAP       -> Sack ablegen at once (ADR 0005)
 //  hold MENU -> Aktionsmenü (long press on UP)
 //  UP/DOWN   -> previous/next page
-//  Tap       -> on the Kartenseite: explore mode (Garmin pan/zoom)
+//  Tap       -> never starts or pauses; on the Kartenseite it opens
+//               "Erkunden" (Garmin's own pan/zoom controls)
+// While exploring the map every input except BACK goes to the Garmin map;
+// BACK returns to "Folgen". Buttons and touch are told apart by KeyGuard.
 class PageDelegate extends WatchUi.BehaviorDelegate {
 
     function initialize() {
         BehaviorDelegate.initialize();
     }
 
-    // START arrives as raw key or as "select" (see StartKey); a screen tap
-    // must never pause the walk.
+    function browsing() as Boolean {
+        return Pages.isMap() && Pages.map().isBrowsing();
+    }
+
+    function onKeyPressed(keyEvent as WatchUi.KeyEvent) as Boolean {
+        KeyGuard.notePress(keyEvent.getKey());
+        return false;
+    }
+
+    // Devices that deliver START as a raw key instead of "select".
     function onKey(keyEvent as WatchUi.KeyEvent) as Boolean {
+        if (browsing()) {
+            return false;
+        }
         if (keyEvent.getKey() == WatchUi.KEY_ENTER) {
-            if (StartKey.accept()) {
-                onStartKey();
-            }
+            KeyGuard.rawStart(method(:onStartKey));
             return true;
         }
         return false;
     }
 
-    function onKeyPressed(keyEvent as WatchUi.KeyEvent) as Boolean {
-        LapKey.notePress(keyEvent.getKey());
-        return false;
+    function onSelect() as Boolean {
+        if (browsing()) {
+            return false;
+        }
+        KeyGuard.select(method(:onStartKey), method(:onScreenTap));
+        return true;
     }
 
-    function onSelect() as Boolean {
-        if (StartKey.acceptSelect()) {
-            onStartKey();
+    function onTap(clickEvent as WatchUi.ClickEvent) as Boolean {
+        if (browsing()) {
+            return false;
         }
+        onScreenTap();
         return true;
     }
 
     function onNextPage() as Boolean {
+        if (browsing()) {
+            return false;
+        }
         Pages.next();
         return true;
     }
 
     function onPreviousPage() as Boolean {
+        if (browsing()) {
+            return false;
+        }
         Pages.previous();
         return true;
     }
 
-    function onTap(clickEvent as WatchUi.ClickEvent) as Boolean {
-        StartKey.noteTap();
-        if (Pages.isMap()) {
-            if (!Pages.map().isBrowsing()) {
-                Pages.map().enterBrowse();
-                return true;
-            }
-            // Exploring: leave the tap to Garmin's map controls.
+    function onMenu() as Boolean {
+        if (browsing()) {
             return false;
         }
+        ActionMenu.open();
         return true;
     }
 
     function onBack() as Boolean {
-        if (Pages.isMap() && Pages.map().isBrowsing()) {
+        if (browsing()) {
             Pages.map().enterFollow();
             return true;
         }
-        LapKey.resolve(method(:onLapButton));
+        KeyGuard.back(method(:onLapButton));
         return true;
     }
 
@@ -74,12 +90,14 @@ class PageDelegate extends WatchUi.BehaviorDelegate {
         DropBag.start();
     }
 
-    function onMenu() as Boolean {
-        ActionMenu.open();
-        return true;
+    // A touch on the screen: only the map reacts (opens "Erkunden").
+    function onScreenTap() as Void {
+        if (Pages.isMap() && !Pages.map().isBrowsing()) {
+            Pages.map().enterBrowse();
+        }
     }
 
-    private function onStartKey() as Void {
+    function onStartKey() as Void {
         if (WalkSession.isRecording()) {
             WalkSession.pause();
             Feedback.vibe();

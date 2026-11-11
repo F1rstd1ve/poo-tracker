@@ -102,7 +102,9 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] START → Pause-Menü; BACK im Menü bleibt pausiert (oranger Balken), START setzt fort
 - [ ] Speichern → „Spaziergang gespeichert“, App schließt, Aktivität erscheint in Garmin Connect als Gehen
 - [ ] Verwerfen → Rückfrage, nichts gespeichert
-- [ ] Tippen auf den Bildschirm pausiert **nicht**
+- [ ] Tippen auf den Bildschirm startet und pausiert **nie** (Startbildschirm, Datenseiten, Alarm)
+- [ ] Stopp-Bildschirm: Garmin-Menü mit rotem Rand, Zeit, Weiter / Speichern / Verwerfen mit Symbolen
+- [ ] Karte antippen → Erkunden: Garmin-Steuerung zum Verschieben und Zoomen erscheint; BACK → Folgen
 
 ## Testliste Sackdepot & Rückweg-Alarm (Schritt 4)
 
@@ -127,6 +129,7 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] Falls doch offline: die Zahl in Klammern notieren (−104 = kein Handy, −300 = Zeitüberschreitung, −402/−403 = Antwort zu groß, 429/502/504 = Server überlastet, −2/−101 = Bluetooth/Warteschlange)
 - [ ] UP/DOWN: Datenseite → Mülleimer-Führung → Karte
 - [ ] Mülleimer-Führung: Pfeil (Kompass) + Distanz zum nächsten Mülleimer, Randpunkte für alle im Umkreis von 100 m; Hundekot-Behälter bevorzugt, wenn ≤ 20 m weiter
+- [ ] Offenes Sackdepot: roter Pfeil + Distanz zum Sack, rote Randpunkte, Mülleimer-Distanz unten
 - [ ] Nach *Aufgehoben* springt die Uhr zur Mülleimer-Führung
 - [ ] Beim Mülleimer ≥ 3 s stehen bleiben → „Entsorgt? (Menü: rückgängig)“, zurück zur vorherigen Seite; MENU halten → *Entsorgen rückgängig* (30 s)
 - [ ] MENU halten → *Mülleimer hinzufügen*; direkt neben einem bekannten → „Schon ein Mülleimer hier“ mit *Abbrechen* vorausgewählt

@@ -11,7 +11,7 @@
     <string id="GpsReady">GPS bereit</string>
     <string id="StartHint">START = Los</string>
     <string id="Paused">Pausiert</string>
-    <string id="Resume">Fortsetzen</string>
+    <string id="Resume">Weiter</string>
     <string id="Resumed">Fortgesetzt</string>
     <string id="Save">Speichern</string>
     <string id="Saved">Spaziergang gespeichert</string>
@@ -56,6 +56,9 @@
     <string id="KindOsm">Mülleimer (OSM)</string>
     <string id="KindDog">Hundekot-Behälter</string>
     <string id="BinGuideTitle">MÜLLEIMER</string>
+    <string id="GuideDepot">Sackdepot</string>
+    <string id="GuideDepots">Nächstes Sackdepot</string>
+    <string id="GuideBinDist">Mülleimer $1$</string>
     <string id="NoBinKnown">Kein Mülleimer bekannt</string>
     <string id="OsmLoading">Lade Mülleimer...</string>
     <string id="OsmOffline">Mülleimer offline</string>

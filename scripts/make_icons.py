@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the launcher icon and map marker bitmaps for Gassi-Depot.
+"""Generate the launcher icon, map markers and pause menu icons for Gassi-Depot.
 
 Usage: python3 scripts/make_icons.py
 Writes PNGs into resources/drawables/. Shapes are drawn 8x oversized and
@@ -83,6 +83,30 @@ def round_marker(size, fill, draw_symbol, name):
     finish(img, size, name)
 
 
+def menu_icons(size=32):
+    """White pause menu icons like the native stop screen: play, save, discard."""
+    n = size
+    img, d = canvas(n)
+    d.polygon([(s(n * 0.28), s(n * 0.18)), (s(n * 0.28), s(n * 0.82)), (s(n * 0.82), s(n * 0.5))], fill=WHITE)
+    finish(img, n, "icon_resume.png")
+
+    img, d = canvas(n)
+    w = n * 0.09
+    d.rectangle([s(n / 2 - w), s(n * 0.12), s(n / 2 + w), s(n * 0.55)], fill=WHITE)
+    d.polygon([(s(n * 0.24), s(n * 0.45)), (s(n * 0.76), s(n * 0.45)), (s(n / 2), s(n * 0.72))], fill=WHITE)
+    d.rectangle([s(n * 0.18), s(n * 0.8), s(n * 0.82), s(n * 0.88)], fill=WHITE)
+    finish(img, n, "icon_save.png")
+
+    img, d = canvas(n)
+    d.rounded_rectangle([s(n * 0.18), s(n * 0.2), s(n * 0.82), s(n * 0.27)], radius=s(1), fill=WHITE)
+    d.rectangle([s(n * 0.4), s(n * 0.12), s(n * 0.6), s(n * 0.2)], fill=WHITE)
+    d.polygon([(s(n * 0.25), s(n * 0.32)), (s(n * 0.75), s(n * 0.32)), (s(n * 0.7), s(n * 0.88)), (s(n * 0.3), s(n * 0.88))],
+              fill=WHITE)
+    for x in (0.41, 0.5, 0.59):
+        d.rectangle([s(n * x - 0.8), s(n * 0.42), s(n * x + 0.8), s(n * 0.78)], fill=(0, 0, 0, 0))
+    finish(img, n, "icon_discard.png")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -103,6 +127,7 @@ def main():
         d.ellipse([s(n / 2 - r), s(n / 2 + 1 - r), s(n / 2 + r), s(n / 2 + 1 + r)], fill=TEAL)
 
     round_marker(24, TEAL, dog_bin, "marker_dogbin.png")
+    menu_icons()
     print("Icons written to", OUT)
 
 

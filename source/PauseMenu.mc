@@ -1,20 +1,35 @@
+import Toybox.Activity;
+import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
 import Toybox.Timer;
 import Toybox.WatchUi;
 
-// Pause menu after START, like the native Walk app:
-// Fortsetzen / Speichern / Verwerfen. BACK leaves it and stays paused.
+// Stop screen after START, like the official activity apps (ADR 0007): the
+// native Menu2 with the red menu theme (red ring), icons and the elapsed time
+// as title: Weiter / Speichern / Verwerfen. BACK leaves it and stays paused
+// (orange PAUSE banner on the pages).
+// "Später fortsetzen" is not offered: a Connect IQ app cannot keep a recording
+// across leaving the app (no Resume Later for Connect IQ activities).
 module PauseMenu {
 
     var exitTimer as Timer.Timer? = null;
 
     function open() as Void {
-        var menu = new WatchUi.Menu2({:title => Rez.Strings.Paused});
-        menu.addItem(new WatchUi.MenuItem(Rez.Strings.Resume, null, :resume, null));
-        menu.addItem(new WatchUi.MenuItem(Rez.Strings.Save, null, :save, null));
-        menu.addItem(new WatchUi.MenuItem(Rez.Strings.Discard, null, :discard, null));
+        var options = {:title => new PauseTitle()};
+        if (WatchUi has :MENU_THEME_RED) {
+            options[:theme] = WatchUi.MENU_THEME_RED;
+        }
+        var menu = new WatchUi.Menu2(options);
+        menu.addItem(item(:resume, Rez.Strings.Resume, Rez.Drawables.IconResume));
+        menu.addItem(item(:save, Rez.Strings.Save, Rez.Drawables.IconSave));
+        menu.addItem(item(:discard, Rez.Strings.Discard, Rez.Drawables.IconDiscard));
         WatchUi.pushView(menu, new PauseMenuDelegate(), WatchUi.SLIDE_UP);
+    }
+
+    function item(id as Symbol, label as ResourceId, icon as ResourceId) as WatchUi.MenuItem {
+        return new WatchUi.IconMenuItem(WatchUi.loadResource(label) as String, null, id,
+            new MenuIcon(icon), null);
     }
 
     // Picked-up bags that were not marked as disposed are assumed taken home.
@@ -36,6 +51,41 @@ module PauseMenu {
     function exitNow() as Void {
         System.exit();
     }
+}
+
+// Title: the elapsed time, like the native stop screen.
+class PauseTitle extends WatchUi.Drawable {
+
+    function initialize() {
+        Drawable.initialize({});
+    }
+
+    function draw(dc as Graphics.Dc) as Void {
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_MEDIUM, timerText(),
+            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+}
+
+// Menu icon centred in the area the menu gives it. (A BitmapResource passed
+// directly crashes Menu2 on the Epix Pro simulator.)
+class MenuIcon extends WatchUi.Drawable {
+
+    private var _bitmap as WatchUi.BitmapResource;
+
+    function initialize(icon as ResourceId) {
+        Drawable.initialize({});
+        _bitmap = WatchUi.loadResource(icon) as WatchUi.BitmapResource;
+    }
+
+    function draw(dc as Graphics.Dc) as Void {
+        dc.drawBitmap(locX + (dc.getWidth() - _bitmap.getWidth()) / 2, locY + (dc.getHeight() - _bitmap.getHeight()) / 2, _bitmap);
+    }
+}
+
+function timerText() as String {
+    var info = Activity.getActivityInfo();
+    return info != null && info.timerTime != null ? Format.duration(info.timerTime as Number) : "0:00";
 }
 
 class PauseMenuDelegate extends WatchUi.Menu2InputDelegate {

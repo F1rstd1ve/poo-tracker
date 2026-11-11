@@ -83,8 +83,11 @@ class AlarmDelegate extends PageDelegate {
     }
 
     function onTap(clickEvent as WatchUi.ClickEvent) as Boolean {
-        StartKey.noteTap();
         return true;
+    }
+
+    // A tap on the alarm screen does nothing.
+    function onScreenTap() as Void {
     }
 
     function onBack() as Boolean {

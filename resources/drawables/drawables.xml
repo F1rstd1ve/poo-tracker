@@ -3,4 +3,7 @@
     <bitmap id="MarkerDepot" filename="marker_depot.png"/>
     <bitmap id="MarkerBin" filename="marker_bin.png"/>
     <bitmap id="MarkerDogBin" filename="marker_dogbin.png"/>
+    <bitmap id="IconResume" filename="icon_resume.png"/>
+    <bitmap id="IconSave" filename="icon_save.png"/>
+    <bitmap id="IconDiscard" filename="icon_discard.png"/>
 </drawables>

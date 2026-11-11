@@ -54,7 +54,7 @@ Die Warnung, die ausgelöst wird, wenn man sich einem offenen Sackdepot wieder n
 _Vermeiden_: Erinnerung, Geofence, Benachrichtigung
 
 **Mülleimer-Führung**:
-Die Anzeige von Richtung und Luftlinien-Distanz zum nächstgelegenen Mülleimer, ergänzt um Hinweise auf weitere Mülleimer in der näheren Umgebung.
+Die Anzeige von Richtung und Luftlinien-Distanz zum nächstgelegenen Mülleimer, ergänzt um Hinweise auf weitere Mülleimer in der näheren Umgebung. Solange ein Sackdepot offen ist, zeigt sie zuerst zum nächsten Sackdepot (rot); der Mülleimer bleibt als Randpunkt sichtbar.
 _Vermeiden_: Navigation, Routing
 
 **Datenseite**:
