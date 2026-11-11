@@ -67,11 +67,18 @@ module StartMenu {
 
     function open() as Void {
         var menu = new WatchUi.Menu2({:title => Rez.Strings.SettingsTitle});
-        var sub = Consent.given()
-            ? Lang.format(WatchUi.loadResource(Rez.Strings.ShareStatus) as String,
-                [Bins.sharedOwnCount(), ShareQueue.size()])
-            : WatchUi.loadResource(Rez.Strings.OnlineBinsSub) as String;
-        menu.addItem(new WatchUi.ToggleMenuItem(Rez.Strings.OnlineBins, sub, :online, Consent.given(), null));
+        menu.addItem(new WatchUi.ToggleMenuItem(Rez.Strings.OnlineBins, Rez.Strings.OnlineBinsSub,
+            :online, Consent.given(), null));
+        if (Consent.given()) {
+            // "Geteilt 3 von 5" / "wartend 2 · Server 200"
+            var code = ShareQueue.lastCode;
+            menu.addItem(new WatchUi.MenuItem(
+                Lang.format(WatchUi.loadResource(Rez.Strings.ShareCount) as String,
+                    [Bins.sharedOwnCount(), Bins.ownLat.size()]),
+                Lang.format(WatchUi.loadResource(Rez.Strings.ShareWaiting) as String,
+                    [ShareQueue.size(), code == 0 ? "-" : code.toString()]),
+                :share, null));
+        }
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.Privacy, Rez.Strings.PrivacySub, :privacy, null));
         WatchUi.pushView(menu, new StartMenuDelegate(), WatchUi.SLIDE_UP);
     }

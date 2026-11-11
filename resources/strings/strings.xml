@@ -49,7 +49,8 @@
     <string id="KindGeneral">Bin</string>
     <string id="Unconfirmed">unconfirmed</string>
     <string id="BinReported">Bin reported</string>
-    <string id="ShareStatus">Shared: $1$ · waiting: $2$</string>
+    <string id="ShareCount">Shared $1$ of $2$</string>
+    <string id="ShareWaiting">waiting $1$ · server $2$</string>
     <string id="RemoveBin">Remove bin</string>
     <string id="BinSaved">Bin saved</string>
     <string id="BinExists">Already a bin here</string>

@@ -66,6 +66,7 @@ function json(obj, status = 200, headers = {}) {
 }
 
 function badRequest(msg) {
+  console.log("contribute 400: " + msg);
   return json({ err: msg }, 400, { "Cache-Control": "no-store" });
 }
 
@@ -170,6 +171,11 @@ async function contribute(request, env, url) {
 
   const out = [];
   for (const ev of body.e) out.push(await handleEvent(c, ev));
+  // Diagnostics without positions or Kennung: event types, value types, results.
+  console.log("contribute " + JSON.stringify(body.e.map((ev, i) => ({
+    t: ev && ev.t, k: ev && ev.k, types: ev && typeof ev === "object" ? [typeof ev.la, typeof ev.lo, typeof ev.s, typeof ev.i] : null,
+    r: out[i],
+  }))));
 
   // Persist counters (atomic increments; the anchor is set only once a day).
   const stmts = [];

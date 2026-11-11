@@ -21,6 +21,8 @@
       "migrations_dir": "migrations"
     }
   ],
+  // Worker logs in the dashboard (Workers > poo-tracker > Logs) and wrangler tail.
+  "observability": { "enabled": true },
   "triggers": {
     // Daily cleanup (unconfirmed bins, reports, counters).
     "crons": ["41 2 * * *"]

@@ -32,6 +32,8 @@ module ShareQueue {
     var sending as Array<Array> = [] as Array<Array>;
     var busy as Boolean = false;
     var retryAt as Number = 0;
+    // Last server answer (HTTP code or Connect IQ error), for the start menu.
+    var lastCode as Number = 0;
 
     function load() as Void {
         var q = Application.Storage.getValue("share_q");
@@ -192,6 +194,7 @@ module ShareQueue {
 
     function onResponse(code as Number, data as Dictionary or String or Null) as Void {
         busy = false;
+        lastCode = code;
         var sent = sending;
         sending = [] as Array<Array>;
         var now = Time.now().value();

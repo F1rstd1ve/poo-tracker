@@ -49,7 +49,8 @@
     <string id="KindGeneral">Mülleimer</string>
     <string id="Unconfirmed">unbestätigt</string>
     <string id="BinReported">Mülleimer gemeldet</string>
-    <string id="ShareStatus">Geteilt: $1$ · wartend: $2$</string>
+    <string id="ShareCount">Geteilt $1$ von $2$</string>
+    <string id="ShareWaiting">wartend $1$ · Server $2$</string>
     <string id="RemoveBin">Mülleimer entfernen</string>
     <string id="BinSaved">Mülleimer gespeichert</string>
     <string id="BinExists">Schon ein Mülleimer hier</string>
