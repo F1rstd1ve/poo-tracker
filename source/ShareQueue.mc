@@ -226,12 +226,29 @@ module ShareQueue {
                 continue;
             }
             done.add(item);
-            if ("a".equals(item[F_TYPE]) && r["s"] instanceof Number) {
-                added(item, r["s"] as Number, r["f"] == 1);
+            var sid = number(r["s"]);
+            if ("a".equals(item[F_TYPE]) && sid != null && sid > 0) {
+                var f = number(r["f"]);
+                added(item, sid, f != null && f == 1);
             }
         }
         removeAll(done);
         System.println("share: sent " + done.size().toString() + ", waiting " + items.size().toString());
+    }
+
+    // JSON numbers arrive as Number in the simulator, but through the phone
+    // app possibly as Long, Float or Double.
+    function number(v) as Number? {
+        if (v instanceof Number) {
+            return v;
+        }
+        if (v instanceof Long || v instanceof Float || v instanceof Double) {
+            return v.toNumber();
+        }
+        if (v instanceof String) {
+            return v.toNumber();
+        }
+        return null;
     }
 
     // The server stored (or confirmed) an added bin.
