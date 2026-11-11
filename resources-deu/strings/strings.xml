@@ -51,6 +51,10 @@
     <string id="BinReported">Mülleimer gemeldet</string>
     <string id="ShareCount">Geteilt $1$ von $2$</string>
     <string id="ShareWaiting">wartend $1$ · Server $2$</string>
+    <string id="StillThere">Ist noch da?</string>
+    <string id="ConfirmBin">Bestätigen</string>
+    <string id="BinConfirmed">Bestätigt</string>
+    <string id="ConfirmLater">Schon gespeichert – bestätigen ab morgen</string>
     <string id="RemoveBin">Mülleimer entfernen</string>
     <string id="BinSaved">Mülleimer gespeichert</string>
     <string id="BinExists">Schon ein Mülleimer hier</string>

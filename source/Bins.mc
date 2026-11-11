@@ -56,6 +56,8 @@ module Bins {
 
     // Same bin: same kind and at most this far apart (ADR 0006).
     const SAME_BIN_M = 8.0;
+    // The same user confirms an own bin when back there this much later.
+    const SELF_CONFIRM_S = 72000; // 20 h
     const MAX_SHARED = 1500;
 
     const MAX_OSM = 4000;
@@ -72,6 +74,8 @@ module Bins {
     var ownSid as Array<Number> = [] as Array<Number>;
     var ownConf as Array<Number> = [] as Array<Number>;
     var ownRef as Array<Number> = [] as Array<Number>;
+    // When it was added (epoch s, 0 = before this was stored).
+    var ownTime as Array<Number> = [] as Array<Number>;
     var nextRef as Number = 1;
 
     var shLat as Array<Float> = [] as Array<Float>;
@@ -118,6 +122,7 @@ module Bins {
         ownSid = numbers("own_sid");
         ownConf = numbers("own_conf");
         ownRef = numbers("own_ref");
+        ownTime = numbers("own_time");
         var n = Application.Storage.getValue("own_next");
         nextRef = n instanceof Number ? n : 1;
         if (ownKind.size() != ownLat.size() || ownSid.size() != ownLat.size()
@@ -135,6 +140,12 @@ module Bins {
                 nextRef++;
             }
             persistOwn();
+        }
+        if (ownTime.size() != ownLat.size()) {
+            ownTime = [] as Array<Number>;
+            for (var i = 0; i < ownLat.size(); i++) {
+                ownTime.add(0);
+            }
         }
 
         shLat = floats("sh_lat");
@@ -175,6 +186,7 @@ module Bins {
         Application.Storage.setValue("own_sid", ownSid as Application.PropertyValueType);
         Application.Storage.setValue("own_conf", ownConf as Application.PropertyValueType);
         Application.Storage.setValue("own_ref", ownRef as Application.PropertyValueType);
+        Application.Storage.setValue("own_time", ownTime as Application.PropertyValueType);
         Application.Storage.setValue("own_next", nextRef);
     }
 
@@ -442,6 +454,7 @@ module Bins {
         ownSid.add(0);
         ownConf.add(0);
         ownRef.add(ref);
+        ownTime.add(Time.now().value());
         persistOwn();
         rebuildNearby(p[0], p[1]);
         return ref;
@@ -458,6 +471,7 @@ module Bins {
             ownSid = without(ownSid, i) as Array<Number>;
             ownConf = without(ownConf, i) as Array<Number>;
             ownRef = without(ownRef, i) as Array<Number>;
+            ownTime = without(ownTime, i) as Array<Number>;
             persistOwn();
         } else if (bin.origin == ORIGIN_SHARED) {
             shGone.add(shSid[i]);
@@ -513,6 +527,26 @@ module Bins {
         var j = shSid.indexOf(sid);
         if (j >= 0) {
             removeShared(j);
+            persistShared();
+        }
+        refresh();
+    }
+
+    // Can this user confirm the own bin `i` now (shared, and added >= 20 h ago)?
+    function ownConfirmable(i as Number) as Boolean {
+        return ownSid[i] != 0 && ownConf[i] == 0 && Time.now().value() - ownTime[i] >= SELF_CONFIRM_S;
+    }
+
+    // The server confirmed bin `sid` (own or geteilt).
+    function setConfirmed(sid as Number) as Void {
+        var i = ownSid.indexOf(sid);
+        if (i >= 0) {
+            ownConf[i] = 1;
+            persistOwn();
+        }
+        var j = shSid.indexOf(sid);
+        if (j >= 0) {
+            shConf[j] = 1;
             persistShared();
         }
         refresh();

@@ -12,6 +12,7 @@ module BinActions {
     var pendingKind as Number = Bins.KIND_GENERAL;
     var pendingLocation as Position.Location? = null;
     var pendingImprecise as Boolean = false;
+    var pendingBin as Bin? = null;
     var candidates as Array<Bin> = [] as Array<Bin>;
 
     function startAdd(kind as Number) as Void {
@@ -30,7 +31,23 @@ module BinActions {
         pendingImprecise = imprecise;
         // Same bin = same kind within 8 m (a dog-waste bin next to a normal
         // bin are two bins).
-        if (Bins.sameKindWithin(p[0], p[1], pendingKind, Bins.SAME_BIN_M) != null) {
+        var existing = Bins.sameKindWithin(p[0], p[1], pendingKind, Bins.SAME_BIN_M);
+        if (existing != null && !existing.confirmed && !imprecise && Consent.given()
+                && existing.origin != Bins.ORIGIN_OSM) {
+            // Back at an unconfirmed bin: confirm it instead of a duplicate
+            // (ADR 0006). An own one only 20 h after adding it.
+            if (existing.origin == Bins.ORIGIN_OWN && !Bins.ownConfirmable(existing.src)) {
+                Feedback.toast(Rez.Strings.ConfirmLater);
+                return;
+            }
+            pendingBin = existing;
+            var ask = new WatchUi.Menu2({:title => Rez.Strings.StillThere});
+            ask.addItem(new WatchUi.MenuItem(Rez.Strings.ConfirmBin, null, :confirm, null));
+            ask.addItem(new WatchUi.MenuItem(Rez.Strings.Cancel, null, :cancel, null));
+            WatchUi.pushView(ask, new ConfirmBinDelegate(), WatchUi.SLIDE_UP);
+            return;
+        }
+        if (existing != null) {
             // Spec: ask, with "No" preselected (first entry).
             pendingLocation = here;
             var menu = new WatchUi.Menu2({:title => Rez.Strings.BinExists});
@@ -106,6 +123,31 @@ module BinActions {
         }
         Bins.remove(bin);
         Feedback.toast(toast);
+    }
+}
+
+// "Ist noch da – bestätigen?"
+class ConfirmBinDelegate extends WatchUi.Menu2InputDelegate {
+
+    function initialize() {
+        Menu2InputDelegate.initialize();
+    }
+
+    function onSelect(item as WatchUi.MenuItem) as Void {
+        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        var bin = BinActions.pendingBin;
+        BinActions.pendingBin = null;
+        if (item.getId() != :confirm || bin == null) {
+            return;
+        }
+        if (bin.origin == Bins.ORIGIN_SHARED) {
+            ShareQueue.confirm(Bins.shSid[bin.src]);
+            Bins.confirmShared(bin.src);
+        } else {
+            ShareQueue.confirm(Bins.ownSid[bin.src]);
+        }
+        Feedback.vibe();
+        Feedback.toast(Rez.Strings.BinConfirmed);
     }
 }
 

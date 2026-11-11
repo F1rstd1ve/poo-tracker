@@ -48,8 +48,9 @@ module Disposal {
         Feedback.toast(automatic ? Rez.Strings.DisposedAuto : Rez.Strings.Disposed);
     }
 
-    // "Entsorgt" at an unconfirmed geteilter Mülleimer of another user
-    // confirms it (ADR 0006: same bin = within 8 m).
+    // "Entsorgt" at an unconfirmed bin confirms it (ADR 0006: same bin =
+    // within 8 m): a geteilter Mülleimer of another user at once, an own one
+    // when it was added at least 20 h ago (the server decides).
     function confirmBin() as Void {
         var here = GpsService.position();
         if (here == null) {
@@ -64,6 +65,8 @@ module Disposal {
         if (bin.origin == Bins.ORIGIN_SHARED && !bin.confirmed) {
             ShareQueue.confirm(Bins.shSid[bin.src]);
             Bins.confirmShared(bin.src);
+        } else if (bin.origin == Bins.ORIGIN_OWN && Bins.ownConfirmable(bin.src)) {
+            ShareQueue.confirm(Bins.ownSid[bin.src]);
         }
     }
 

@@ -47,8 +47,8 @@ Entschieden im Grilling vom 11.11.2026 (ADR 0006).
 ### Regeln
 
 - **Gleicher Mülleimer** = gleiche Art (Mülleimer / Hundekot-Behälter) und höchstens **8 m** Abstand. Gilt auf dem Server und auf der Uhr (Duplikat-Frage beim Anlegen).
-- **Anlegen:** Neu angelegt ist ein geteilter Mülleimer sofort für alle sichtbar, aber *unbestätigt*. Legt eine **andere** Kennung mit genauem GPS denselben Mülleimer an, wird er *bestätigt* (kein zweiter Eintrag). Ein Beitrag mit ungenauem GPS bestätigt nie, sondern wird ein eigener unbestätigter Eintrag. Dieselbe Kennung erzeugt kein Duplikat (der Server antwortet mit dem vorhandenen Eintrag).
-- **Entsorgt** innerhalb von 8 m eines geteilten Mülleimers einer anderen Kennung bestätigt ihn. OSM-Mülleimer werden nicht bestätigt.
+- **Anlegen:** Neu angelegt ist ein geteilter Mülleimer sofort für alle sichtbar, aber *unbestätigt*. Legt eine **andere** Kennung mit genauem GPS denselben Mülleimer an, wird er *bestätigt* (kein zweiter Eintrag). Ein Beitrag mit ungenauem GPS bestätigt nie, sondern wird ein eigener unbestätigter Eintrag. Dieselbe Kennung erzeugt kein Duplikat (der Server antwortet mit dem vorhandenen Eintrag); ist dieser unbestätigt, mindestens **20 Stunden** alt und das GPS genau, wird er dabei bestätigt (**Selbst bestätigen**).
+- **Entsorgt** innerhalb von 8 m eines geteilten Mülleimers bestätigt ihn: den einer anderen Kennung sofort, den eigenen frühestens 20 Stunden nach dem Anlegen. OSM-Mülleimer werden nicht bestätigt.
 - **Meldung** („Hier ist kein Mülleimer“): auf der eigenen Uhr sofort weg; für alle weg nach Meldungen von **2 verschiedenen Kennungen**. Gilt für geteilte und OSM-Mülleimer (OSM-Mülleimer werden über Art und Koordinate auf 1e-5° erkannt).
 - **Löschen:** eigene, noch unbestätigte Mülleimer (gleiche Kennung).
 - **OSM gegen geteilt** (wöchentlicher Kachel-Bau): unbestätigter geteilter Mülleimer mit OSM-Mülleimer gleicher Art ≤ 8 m → der geteilte wird gelöscht. Bestätigter geteilter Mülleimer → der OSM-Mülleimer wird aus den Kacheln entfernt.
@@ -75,6 +75,7 @@ Basis `https://poo-tracker.kjoerg.workers.dev/api/v1`. Alle Antworten JSON, Koor
 - `k`: `g` Mülleimer, `d` Hundekot-Behälter. `i`: 1 = ungenaues GPS. `s`: Server-Kennung des geteilten Mülleimers (bei `r` auf einen OSM-Mülleimer: 0).
 - Antwort `{"r": [ … ]}`, ein Ergebnis je Ereignis in derselben Reihenfolge:
   - `a`: `{"s": <id>, "f": 0|1}` (`f` = bestätigt; bei Bestätigung eines vorhandenen dessen `id`)
+  - `f`: `{"ok": 1, "f": 0|1}` (Zustand danach)
   - sonst `{"ok": 1}`
   - Fehler je Ereignis: `{"err": "limit"}` (später erneut), `{"err": "far"}` (50-km-Regel, später erneut), `{"err": "bad"}` (verwerfen)
 - Ganze Anfrage ungültig (kein JSON, Kennung falsch, > 10 Ereignisse): HTTP 400.
@@ -105,7 +106,7 @@ D1-Datenbank `poo-tracker` (Region EEUR), Tabellen über `wrangler d1 migrations
 - **Warteschlange** (`ShareQueue`): Anlegen, Meldungen, Bestätigungen, Löschen werden gespeichert und gesendet, wenn das Handy verbunden ist und gerade nichts geladen wird – bis zu 10 pro Anfrage, nach Fehlern später erneut (auch beim nächsten Spaziergang). Nach dem Update werden die bisherigen eigenen Mülleimer einmal automatisch eingereiht (nur mit Zustimmung).
 - **Geteilte Ebene** (`SharedLoader`): je Wurzel im ±500-m-Quadrat, gültig 1 Stunde; ersetzt die geteilten Mülleimer anderer Nutzer dieser Wurzel. Eigene Mülleimer (mit Server-Kennung) werden nicht doppelt angezeigt, übernehmen aber den Status *bestätigt*.
 - **Anzeige:** unbestätigte Mülleimer als Ring statt gefülltem Punkt (Karte und Pfeilseite), auf der Pfeilseite zusätzlich „unbestätigt“.
-- **Aktionsmenü:** *Mülleimer anlegen* und *Hundekot-Behälter anlegen*.
+- **Aktionsmenü:** *Mülleimer anlegen* und *Hundekot-Behälter anlegen*. Steht dort schon ein unbestätigter geteilter Mülleimer derselben Art (≤ 8 m), fragt die Uhr „Ist noch da?“ → *Bestätigen* statt eines Duplikats; beim eigenen erst 20 Stunden nach dem Anlegen, vorher „Schon gespeichert – bestätigen ab morgen“.
 - **Startmenü** (MENU halten am Startbildschirm): unter *Online-Mülleimer* „Geteilt: 5 · wartend: 0“.
 
 ### Kachel-Bau mit geteilten Mülleimern
@@ -114,7 +115,7 @@ Die Action exportiert vor dem Bau `SELECT id,lat,lon,kind,confirmed FROM bins` (
 
 ### Test
 
-`server/test/api_test.sh` gegen `wrangler dev --local --var TEST_IP_HEADER:X-Test-IP` (73 Prüfungen). Nie gegen den echten Server ausführen; `TEST_IP_HEADER` nie in Produktion setzen.
+`server/test/api_test.sh` gegen `wrangler dev --local --var TEST_IP_HEADER:X-Test-IP` (74 Prüfungen); `server/test/self_confirm_test.sh` gegen einen Dev-Server mit zusätzlich `--var SELF_CONFIRM_S:0`. Nie gegen den echten Server ausführen; `TEST_IP_HEADER` nie in Produktion setzen.
 
 ## Offen
 

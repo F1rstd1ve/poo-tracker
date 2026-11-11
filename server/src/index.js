@@ -21,6 +21,9 @@ const MAX_OTHER = 30;
 const LAYER_TTL = 3600;
 const DAY_S = 86400;
 const UNCONFIRMED_DAYS = 180;
+// The same Kennung confirms its own bin when it is back there at least this
+// long after adding it (ADR 0006): returning on another day is real use.
+const SELF_CONFIRM_S = 20 * 3600;
 const REPORT_DAYS = 365;
 const EARTH_M = 6371008.8;
 // Public default; set the secret IP_SALT to make the IP hashes unguessable.
@@ -235,7 +238,7 @@ async function nearBins(env, kind, lat, lon) {
   const dLat = m / 111000;
   const dLon = m / (111000 * Math.max(0.01, Math.cos((lat * Math.PI) / 180)));
   const { results } = await env.DB
-    .prepare("SELECT id, lat, lon, uid, confirmed, root FROM bins WHERE kind = ? AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?")
+    .prepare("SELECT id, lat, lon, uid, confirmed, root, created FROM bins WHERE kind = ? AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?")
     .bind(kind, lat - dLat, lat + dLat, lon - dLon, lon + dLon)
     .all();
   return results
@@ -258,16 +261,17 @@ async function add(c, ev) {
   let res;
   const own = near.find((b) => b.uid === c.uid);
   if (own) {
-    // Same uid: no duplicate, answer with the existing entry.
+    // Same uid: no duplicate, answer with the existing entry. Back there with
+    // precise GPS at least SELF_CONFIRM_S later: that confirms it.
+    if (!own.confirmed && !imprecise && c.now - own.created >= selfConfirmS(c.env)) {
+      await confirm(c, own.id, own.root);
+      own.confirmed = 1;
+    }
     res = { s: own.id, f: own.confirmed ? 1 : 0 };
   } else if (!imprecise && near.length) {
     // Another uid with precise GPS confirms the nearest existing bin.
     const b = near[0];
-    if (!b.confirmed) {
-      await c.env.DB.prepare("UPDATE bins SET confirmed = 1, confirmed_at = ? WHERE id = ? AND confirmed = 0")
-        .bind(c.now, b.id).run();
-      c.touched.add(b.root);
-    }
+    if (!b.confirmed) await confirm(c, b.id, b.root);
     res = { s: b.id, f: 1 };
   } else {
     // New (or imprecise) contribution: own unconfirmed entry.
@@ -286,6 +290,18 @@ async function add(c, ev) {
     c.u.anchorLon = lon;
   }
   return res;
+}
+
+function selfConfirmS(env) {
+  // SELF_CONFIRM_S may be overridden for local tests only (wrangler dev --var).
+  const v = Number(env.SELF_CONFIRM_S);
+  return Number.isFinite(v) && v >= 0 && env.SELF_CONFIRM_S !== undefined ? v : SELF_CONFIRM_S;
+}
+
+async function confirm(c, id, root) {
+  await c.env.DB.prepare("UPDATE bins SET confirmed = 1, confirmed_at = ? WHERE id = ? AND confirmed = 0")
+    .bind(c.now, id).run();
+  c.touched.add(root);
 }
 
 // "r": report "Hier ist kein Mülleimer" for a shared (s > 0) or OSM (s = 0) bin.
@@ -331,19 +347,21 @@ async function report(c, ev) {
   return OK;
 }
 
-// "f": disposal near a shared bin of another uid confirms it.
+// "f": disposal at a shared bin (or "Ist noch da – bestätigen") confirms it:
+// a bin of another uid at once, an own bin at least SELF_CONFIRM_S after it
+// was added. Answers {"ok":1,"f":0|1} with the resulting state.
 async function confirmByDisposal(c, ev) {
   if (!validId(ev.s)) return BAD;
   if (overLimit(c, "other")) return LIMIT;
   count(c, "other");
-  const b = await c.env.DB.prepare("SELECT uid, confirmed, root FROM bins WHERE id = ?").bind(ev.s).first();
+  const b = await c.env.DB.prepare("SELECT uid, confirmed, root, created FROM bins WHERE id = ?").bind(ev.s).first();
   if (!b) return BAD;
-  if (b.uid !== c.uid && !b.confirmed) {
-    await c.env.DB.prepare("UPDATE bins SET confirmed = 1, confirmed_at = ? WHERE id = ? AND confirmed = 0")
-      .bind(c.now, ev.s).run();
-    c.touched.add(b.root);
+  let confirmed = !!b.confirmed;
+  if (!confirmed && (b.uid !== c.uid || c.now - b.created >= selfConfirmS(c.env))) {
+    await confirm(c, ev.s, b.root);
+    confirmed = true;
   }
-  return OK;
+  return { ok: 1, f: confirmed ? 1 : 0 };
 }
 
 // "x": delete an own, still unconfirmed bin.

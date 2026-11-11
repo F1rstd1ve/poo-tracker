@@ -226,10 +226,12 @@ module ShareQueue {
                 continue;
             }
             done.add(item);
+            var f = number(r["f"]);
             var sid = number(r["s"]);
             if ("a".equals(item[F_TYPE]) && sid != null && sid > 0) {
-                var f = number(r["f"]);
                 added(item, sid, f != null && f == 1);
+            } else if ("f".equals(item[F_TYPE]) && f != null && f == 1) {
+                Bins.setConfirmed(item[F_SID] as Number);
             }
         }
         removeAll(done);

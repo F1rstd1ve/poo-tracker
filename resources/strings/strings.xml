@@ -51,6 +51,10 @@
     <string id="BinReported">Bin reported</string>
     <string id="ShareCount">Shared $1$ of $2$</string>
     <string id="ShareWaiting">waiting $1$ · server $2$</string>
+    <string id="StillThere">Still there?</string>
+    <string id="ConfirmBin">Confirm</string>
+    <string id="BinConfirmed">Confirmed</string>
+    <string id="ConfirmLater">Already saved – confirm from tomorrow</string>
     <string id="RemoveBin">Remove bin</string>
     <string id="BinSaved">Bin saved</string>
     <string id="BinExists">Already a bin here</string>
