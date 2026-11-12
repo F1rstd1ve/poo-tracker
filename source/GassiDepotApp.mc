@@ -13,6 +13,7 @@ class GassiDepotApp extends Application.AppBase {
 
     function onStart(state as Dictionary?) as Void {
         Settings.load();
+        Settings.applyTouch();
         DepotStore.load();
         Bins.load();
         TileLoader.load();
@@ -56,6 +57,7 @@ class GassiDepotApp extends Application.AppBase {
     // Settings changed in the Connect IQ phone app while the app runs.
     function onSettingsChanged() as Void {
         Settings.load();
+        Settings.applyTouch();
         Pages.rebuild();
         GpsService.start(method(:onPosition));
         WatchUi.requestUpdate();

@@ -81,7 +81,7 @@ Auf Cloudflare bringt sie die GitHub Action `.github/workflows/tiles.yml` (wöch
 ## Einstellungen ändern
 
 Am Handy in der **Connect IQ App** → *Meine Geräte* → Epix → *Gassi-Depot* → *Einstellungen* (funktioniert erst, wenn die App über den Store installiert ist; bei Sideload im Simulator unter *File → Edit Persistent Storage* bzw. *Settings*).
-Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleimer-Führung/Kartenseite ein/aus, Alarm-Radien (scharf ab / auslösen bei), Alarmton, OSM-Mülleimer laden, GPS-Modus.
+Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleimer-Führung/Kartenseite ein/aus, Alarm-Radien (scharf ab / auslösen bei), Alarmton, Online-Mülleimer, Touch an/aus, GPS-Modus. Auf der Uhr: Startbildschirm → MENU halten → *Online-Mülleimer*, *Touch*, *Datenschutz*.
 
 ## Testliste Karten-Prototyp (Schritt 2)
 
@@ -103,6 +103,7 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] Speichern → „Spaziergang gespeichert“, App schließt, Aktivität erscheint in Garmin Connect als Gehen
 - [ ] Verwerfen → Rückfrage, nichts gespeichert
 - [ ] Tippen auf den Bildschirm startet und pausiert **nie** (Startbildschirm, Datenseiten, Alarm)
+- [ ] *Touch* aus (Startbildschirm → MENU halten): Touchscreen reagiert in der App nicht mehr, nach Verlassen der App wieder normal
 - [ ] Stopp-Bildschirm: Garmin-Menü mit rotem Rand, Zeit, Weiter / Speichern / Verwerfen mit Symbolen
 - [ ] Karte antippen → Erkunden: Garmin-Steuerung zum Verschieben und Zoomen erscheint; BACK → Folgen
 

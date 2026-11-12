@@ -55,6 +55,8 @@
     <string id="ConfirmBin">Confirm</string>
     <string id="BinConfirmed">Confirmed</string>
     <string id="ConfirmLater">Already saved – confirm from tomorrow</string>
+    <string id="TouchItem">Touch</string>
+    <string id="TouchItemSub">Off: buttons only</string>
     <string id="RemoveBin">Remove bin</string>
     <string id="BinSaved">Bin saved</string>
     <string id="BinExists">Already a bin here</string>
@@ -135,6 +137,7 @@
     <string id="SetTrigR" scope="settings">Trigger alarm within (m)</string>
     <string id="SetTrigRPrompt" scope="settings">Distance to the bag that triggers the alarm</string>
     <string id="SetTone" scope="settings">Alarm sound</string>
+    <string id="SetTouch" scope="settings">Touchscreen during the app</string>
     <string id="SetOsm" scope="settings">Online bins (load and share)</string>
     <string id="SetGps" scope="settings">GPS mode</string>
     <string id="Lbl0">TIMER</string>

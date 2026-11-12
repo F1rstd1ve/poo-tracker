@@ -70,7 +70,7 @@ Ergebnis des Grilling-Interviews (November 2026). Begriffe siehe [GLOSSARY.md](.
 
 ## Einstellungen (Connect-IQ-Handy-App)
 
-Datenseiten 1–3 (Layout, Felder) · Mülleimer-Führung ein/aus · Kartenseite ein/aus · Scharf-Radius (50 m) · Auslöse-Radius (25 m) · Alarmton ein/aus · OSM-Mülleimer laden ein/aus · GPS-Modus. Einheiten folgen den Systemeinstellungen.
+Datenseiten 1–3 (Layout, Felder) · Mülleimer-Führung ein/aus · Kartenseite ein/aus · Scharf-Radius (50 m) · Auslöse-Radius (25 m) · Alarmton ein/aus · Online-Mülleimer ein/aus · Touch an/aus (Touchscreen in der App abgeschaltet, ADR 0007) · GPS-Modus. Einheiten folgen den Systemeinstellungen.
 
 ## Umsetzungsreihenfolge
 

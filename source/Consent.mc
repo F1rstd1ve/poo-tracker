@@ -62,7 +62,8 @@ class ConsentDelegate extends WatchUi.ConfirmationDelegate {
     }
 }
 
-// Start screen menu (hold MENU): online switch and privacy policy.
+// Start screen menu (hold MENU): online switch, sharing status, touchscreen
+// on/off (like the Garmin app options) and privacy policy.
 module StartMenu {
 
     function open() as Void {
@@ -79,6 +80,8 @@ module StartMenu {
                     [ShareQueue.size(), code == 0 ? "-" : code.toString()]),
                 :share, null));
         }
+        menu.addItem(new WatchUi.ToggleMenuItem(Rez.Strings.TouchItem, Rez.Strings.TouchItemSub,
+            :touch, Settings.touch, null));
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.Privacy, Rez.Strings.PrivacySub, :privacy, null));
         WatchUi.pushView(menu, new StartMenuDelegate(), WatchUi.SLIDE_UP);
     }
@@ -96,6 +99,8 @@ class StartMenuDelegate extends WatchUi.Menu2InputDelegate {
             var on = (item as WatchUi.ToggleMenuItem).isEnabled();
             Consent.set(on);
             Feedback.toast(on ? Rez.Strings.OnlineOn : Rez.Strings.OnlineOff);
+        } else if (id == :touch) {
+            Settings.setTouch((item as WatchUi.ToggleMenuItem).isEnabled());
         } else if (id == :privacy) {
             Consent.openPrivacy();
         }

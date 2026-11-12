@@ -23,5 +23,6 @@
     <property id="trigR" type="number">25</property>
     <property id="tone" type="boolean">true</property>
     <property id="osm" type="boolean">true</property>
+    <property id="touch" type="boolean">true</property>
     <property id="gps" type="number">0</property>
 </properties>

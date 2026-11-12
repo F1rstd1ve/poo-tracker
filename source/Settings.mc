@@ -1,5 +1,6 @@
 import Toybox.Application;
 import Toybox.Lang;
+import Toybox.WatchUi;
 
 // App settings, edited in the Connect IQ phone app (ADR 0003).
 // Values are validated so a broken setting can never crash the watch.
@@ -16,6 +17,8 @@ module Settings {
     var triggerRadius as Float = 25.0;
     var alarmTone as Boolean = true;
     var osm as Boolean = true;
+    // Touchscreen while the app runs (like the Garmin activity option "Touch").
+    var touch as Boolean = true;
     var gpsMode as Number = 0;
 
     function load() as Void {
@@ -36,7 +39,30 @@ module Settings {
         }
         alarmTone = bool("tone", alarmTone);
         osm = bool("osm", osm);
+        touch = bool("touch", touch);
         gpsMode = clamp(num("gps", gpsMode), 0, 2);
+    }
+
+    // Turns the touchscreen on/off while the app is in the foreground
+    // (API 5.2.0; older devices keep touch, the app still ignores taps that
+    // could start, pause or drop something, ADR 0007).
+    function applyTouch() as Void {
+        if (WatchUi has :configureTouchEvents) {
+            try {
+                WatchUi.configureTouchEvents({:enabled => touch});
+            } catch (e) {
+            }
+        }
+    }
+
+    // Changed on the watch (start screen menu).
+    function setTouch(on as Boolean) as Void {
+        touch = on;
+        try {
+            Application.Properties.setValue("touch", on);
+        } catch (e) {
+        }
+        applyTouch();
     }
 
     // Spec: 40 m for imprecise depots, never less than the normal radius + 15 m.

@@ -55,6 +55,8 @@
     <string id="ConfirmBin">Bestätigen</string>
     <string id="BinConfirmed">Bestätigt</string>
     <string id="ConfirmLater">Schon gespeichert – bestätigen ab morgen</string>
+    <string id="TouchItem">Touch</string>
+    <string id="TouchItemSub">Aus: nur Tasten</string>
     <string id="RemoveBin">Mülleimer entfernen</string>
     <string id="BinSaved">Mülleimer gespeichert</string>
     <string id="BinExists">Schon ein Mülleimer hier</string>
@@ -135,6 +137,7 @@
     <string id="SetTrigR" scope="settings">Alarm auslösen bei (m)</string>
     <string id="SetTrigRPrompt" scope="settings">Entfernung zum Sack, bei der der Alarm auslöst</string>
     <string id="SetTone" scope="settings">Alarmton</string>
+    <string id="SetTouch" scope="settings">Touchscreen in der App</string>
     <string id="SetOsm" scope="settings">Online-Mülleimer (laden und teilen)</string>
     <string id="SetGps" scope="settings">GPS-Modus</string>
     <string id="Lbl0">ZEIT</string>
