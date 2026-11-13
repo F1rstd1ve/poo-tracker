@@ -98,7 +98,7 @@ module BinActions {
     // "Hundekot-Behälter" / "Mülleimer · unbestätigt"
     function label(bin as Bin) as String {
         var text = WatchUi.loadResource(kindLabel(bin.kind)) as String;
-        if (!bin.confirmed) {
+        if (!bin.shownConfirmed()) {
             text += " · " + (WatchUi.loadResource(Rez.Strings.Unconfirmed) as String);
         }
         return text;

@@ -136,7 +136,7 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] MENU halten → *Mülleimer anlegen* / *Hundekot-Behälter anlegen*; ≤ 8 m neben einem bekannten derselben Art → „Schon ein Mülleimer hier“ mit *Abbrechen* vorausgewählt
 - [ ] MENU halten → *Mülleimer entfernen*: 3 nächste; eigener unbestätigter wird gelöscht, alle anderen „gemeldet“ (hier sofort weg)
 - [ ] Teilen: Startbildschirm → MENU halten → *Online-Mülleimer* zeigt „Geteilt: n · wartend: m“; mit Handy wird „wartend“ nach kurzer Zeit 0
-- [ ] Unbestätigte Mülleimer als Ring (Karte, Pfeilseite „· unbestätigt“); ein zweites Gerät/Konto bestätigt durch Anlegen oder Entsorgen
+- [ ] Unbestätigte Mülleimer anderer als Ring (Karte, Pfeilseite „· unbestätigt“), eigene immer gefüllt; ein zweites Gerät/Konto bestätigt durch Anlegen oder Entsorgen
 - [ ] Alarmton ist jetzt ein sanfter Drei-Ton-Gong (statt Garmin-Alarmton)
 
 ## Testliste Datenseiten & Feinschliff (Schritte 6–7)

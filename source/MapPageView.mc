@@ -158,7 +158,7 @@ class MapPageView extends WatchUi.MapTrackView {
                 var b = list[i];
                 var dog = b.kind == Bins.KIND_DOG;
                 // Unconfirmed bins as a ring (ADR 0006).
-                var icon = b.confirmed ? (dog ? _dogBinIcon : _binIcon) : (dog ? _dogBinRingIcon : _binRingIcon);
+                var icon = b.shownConfirmed() ? (dog ? _dogBinIcon : _binIcon) : (dog ? _dogBinRingIcon : _binRingIcon);
                 var marker = new WatchUi.MapMarker(list[i].location());
                 marker.setIcon(icon, icon.getWidth() / 2, icon.getHeight() / 2);
                 _binMarkers.add(marker);

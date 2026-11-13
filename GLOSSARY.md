@@ -21,7 +21,7 @@ Ein Mülleimer, den ein Nutzer der App angelegt hat. Mit Zustimmung zum Teilen i
 _Vermeiden_: Eigener Mülleimer (als eigene Kategorie), Community-Mülleimer
 
 **Unbestätigt / Bestätigt**:
-Zustand eines geteilten Mülleimers. Neu angelegt ist er unbestätigt; bestätigt wird er, wenn ein zweiter Nutzer ihn ebenfalls anlegt oder dort entsorgt (gleiche Art, höchstens 8 m, genaues GPS) – oder derselbe Nutzer frühestens 20 Stunden nach dem Anlegen wieder dort ist (*Selbst bestätigen*). Unbestätigte verschwinden nach 6 Monaten. Auf der Uhr sind unbestätigte als Ring statt als Punkt dargestellt.
+Zustand eines geteilten Mülleimers. Neu angelegt ist er unbestätigt; bestätigt wird er, wenn ein zweiter Nutzer ihn ebenfalls anlegt oder dort entsorgt (gleiche Art, höchstens 8 m, genaues GPS) – oder derselbe Nutzer frühestens 20 Stunden nach dem Anlegen wieder dort ist (*Selbst bestätigen*). Unbestätigte verschwinden nach 6 Monaten. Auf der Uhr sind unbestätigte Mülleimer anderer Nutzer als Ring statt als Punkt dargestellt; eigene erscheinen auf der eigenen Uhr immer gefüllt.
 
 **OSM-Mülleimer**:
 Ein Mülleimer aus OpenStreetMap, den die App aus der Umgebung geladen hat.

@@ -72,7 +72,7 @@ class BinGuideView extends WatchUi.View {
             var x = (cx + ring * Math.sin(a)).toNumber();
             var y = (cy - ring * Math.cos(a)).toNumber();
             dc.setColor(kindColor(b.kind), Graphics.COLOR_TRANSPARENT);
-            if (b.confirmed) {
+            if (b.shownConfirmed()) {
                 dc.fillCircle(x, y, 7);
             } else {
                 dc.setPenWidth(3);

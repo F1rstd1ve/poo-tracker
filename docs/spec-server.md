@@ -105,7 +105,7 @@ D1-Datenbank `poo-tracker` (Region EEUR), Tabellen über `wrangler d1 migrations
 - **Kennung:** 32 Hex-Zeichen zufällig, erzeugt bei der Zustimmung; wird gelöscht, wenn das Teilen ausgeschaltet wird.
 - **Warteschlange** (`ShareQueue`): Anlegen, Meldungen, Bestätigungen, Löschen werden gespeichert und gesendet, wenn das Handy verbunden ist und gerade nichts geladen wird – bis zu 10 pro Anfrage, nach Fehlern später erneut (auch beim nächsten Spaziergang). Nach dem Update werden die bisherigen eigenen Mülleimer einmal automatisch eingereiht (nur mit Zustimmung).
 - **Geteilte Ebene** (`SharedLoader`): je Wurzel im ±500-m-Quadrat, gültig 1 Stunde; ersetzt die geteilten Mülleimer anderer Nutzer dieser Wurzel. Eigene Mülleimer (mit Server-Kennung) werden nicht doppelt angezeigt, übernehmen aber den Status *bestätigt*.
-- **Anzeige:** unbestätigte Mülleimer als Ring statt gefülltem Punkt (Karte und Pfeilseite), auf der Pfeilseite zusätzlich „unbestätigt“.
+- **Anzeige:** unbestätigte Mülleimer anderer Nutzer als Ring statt gefülltem Punkt (Karte und Pfeilseite), auf der Pfeilseite zusätzlich „unbestätigt“. Eigene Mülleimer zeigt die eigene Uhr immer gefüllt; für andere bleiben sie unbestätigt, bis sie bestätigt sind.
 - **Aktionsmenü:** *Mülleimer anlegen* und *Hundekot-Behälter anlegen*. Steht dort schon ein unbestätigter geteilter Mülleimer derselben Art (≤ 8 m), fragt die Uhr „Ist noch da?“ → *Bestätigen* statt eines Duplikats; beim eigenen erst 20 Stunden nach dem Anlegen, vorher „Schon gespeichert – bestätigen ab morgen“.
 - **Startmenü** (MENU halten am Startbildschirm): unter *Online-Mülleimer* „Geteilt: 5 · wartend: 0“.
 

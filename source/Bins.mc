@@ -27,6 +27,13 @@ class Bin {
         self.confirmed = confirmed;
     }
 
+    // Display: own bins always look confirmed on this watch (the user knows
+    // they are there); for everyone else they stay unconfirmed until
+    // confirmed (ADR 0006). Logic (delete vs. Meldung) uses `confirmed`.
+    function shownConfirmed() as Boolean {
+        return confirmed || origin == Bins.ORIGIN_OWN;
+    }
+
     function location() as Position.Location {
         return new Position.Location({:latitude => lat, :longitude => lon, :format => :degrees});
     }
