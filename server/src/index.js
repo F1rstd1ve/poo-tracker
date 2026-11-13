@@ -148,10 +148,11 @@ async function contribute(request, env, url) {
   const ipKey = "ip:" + (await sha256Hex(day + "|" + (env.IP_SALT || IP_SALT) + "|" + ip));
   const uKey = "u:" + uid;
 
-  const { results: rows } = await env.DB
-    .prepare("SELECT key, n_add, n_other, anchor_lat, anchor_lon FROM counters WHERE day = ? AND key IN (?, ?)")
-    .bind(day, uKey, ipKey)
-    .all();
+  const [{ results: rows }, { results: trustedRows }] = await env.DB.batch([
+    env.DB.prepare("SELECT key, n_add, n_other, anchor_lat, anchor_lon FROM counters WHERE day = ? AND key IN (?, ?)")
+      .bind(day, uKey, ipKey),
+    env.DB.prepare("SELECT 1 AS t FROM trusted WHERE uid = ?").bind(uid),
+  ]);
   const counter = (key) => {
     const row = rows.find((r) => r.key === key);
     return {
@@ -167,6 +168,8 @@ async function contribute(request, env, url) {
 
   const c = {
     env, uid, now,
+    // Trusted Kennung (table trusted): its bins are confirmed at once.
+    trusted: trustedRows.length > 0,
     u: counter(uKey),
     ip: counter(ipKey),
     touched: new Set(), // roots whose cached layer must be purged
@@ -263,7 +266,7 @@ async function add(c, ev) {
   if (own) {
     // Same uid: no duplicate, answer with the existing entry. Back there with
     // precise GPS at least SELF_CONFIRM_S later: that confirms it.
-    if (!own.confirmed && !imprecise && c.now - own.created >= selfConfirmS(c.env)) {
+    if (!own.confirmed && !imprecise && (c.trusted || c.now - own.created >= selfConfirmS(c.env))) {
       await confirm(c, own.id, own.root);
       own.confirmed = 1;
     }
@@ -274,14 +277,16 @@ async function add(c, ev) {
     if (!b.confirmed) await confirm(c, b.id, b.root);
     res = { s: b.id, f: 1 };
   } else {
-    // New (or imprecise) contribution: own unconfirmed entry.
+    // New (or imprecise) contribution: own entry, unconfirmed unless the
+    // Kennung is trusted and the GPS precise.
     const root = rootKey(lat, lon);
+    const conf = c.trusted && !imprecise ? 1 : 0;
     const row = await c.env.DB
-      .prepare("INSERT INTO bins (lat, lon, kind, confirmed, uid, imprecise, created, root) VALUES (?, ?, ?, 0, ?, ?, ?, ?) RETURNING id")
-      .bind(lat, lon, kind, c.uid, imprecise ? 1 : 0, c.now, root)
+      .prepare("INSERT INTO bins (lat, lon, kind, confirmed, uid, imprecise, created, root, confirmed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id")
+      .bind(lat, lon, kind, conf, c.uid, imprecise ? 1 : 0, c.now, root, conf ? c.now : null)
       .first();
     c.touched.add(root);
-    res = { s: row.id, f: 0 };
+    res = { s: row.id, f: conf };
   }
 
   count(c, "add");
@@ -357,7 +362,7 @@ async function confirmByDisposal(c, ev) {
   const b = await c.env.DB.prepare("SELECT uid, confirmed, root, created FROM bins WHERE id = ?").bind(ev.s).first();
   if (!b) return BAD;
   let confirmed = !!b.confirmed;
-  if (!confirmed && (b.uid !== c.uid || c.now - b.created >= selfConfirmS(c.env))) {
+  if (!confirmed && (b.uid !== c.uid || c.trusted || c.now - b.created >= selfConfirmS(c.env))) {
     await confirm(c, ev.s, b.root);
     confirmed = true;
   }

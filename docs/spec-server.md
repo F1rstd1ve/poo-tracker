@@ -50,6 +50,7 @@ Entschieden im Grilling vom 11.11.2026 (ADR 0006).
 - **Anlegen:** Neu angelegt ist ein geteilter Mülleimer sofort für alle sichtbar, aber *unbestätigt*. Legt eine **andere** Kennung mit genauem GPS denselben Mülleimer an, wird er *bestätigt* (kein zweiter Eintrag). Ein Beitrag mit ungenauem GPS bestätigt nie, sondern wird ein eigener unbestätigter Eintrag. Dieselbe Kennung erzeugt kein Duplikat (der Server antwortet mit dem vorhandenen Eintrag); ist dieser unbestätigt, mindestens **20 Stunden** alt und das GPS genau, wird er dabei bestätigt (**Selbst bestätigen**).
 - **Entsorgt** innerhalb von 8 m eines geteilten Mülleimers bestätigt ihn: den einer anderen Kennung sofort, den eigenen frühestens 20 Stunden nach dem Anlegen. OSM-Mülleimer werden nicht bestätigt.
 - **Meldung** („Hier ist kein Mülleimer“): auf der eigenen Uhr sofort weg; für alle weg nach Meldungen von **2 verschiedenen Kennungen**. Gilt für geteilte und OSM-Mülleimer (OSM-Mülleimer werden über Art und Koordinate auf 1e-5° erkannt).
+- **Vertrauenswürdige Kennungen** (Tabelle `trusted`): ihre Mülleimer sind mit genauem GPS sofort bestätigt, sie bestätigen auch eigene ohne 20-Stunden-Wartezeit. Eintragen nur von Hand: `wrangler d1 execute poo-tracker --remote --command "INSERT INTO trusted (uid, note, created) VALUES ('<Kennung>', '<Notiz>', unixepoch())"`. Schaltet der Nutzer das Teilen aus und wieder ein, bekommt die Uhr eine neue Kennung – dann neu eintragen.
 - **Löschen:** eigene, noch unbestätigte Mülleimer (gleiche Kennung).
 - **OSM gegen geteilt** (wöchentlicher Kachel-Bau): unbestätigter geteilter Mülleimer mit OSM-Mülleimer gleicher Art ≤ 8 m → der geteilte wird gelöscht. Bestätigter geteilter Mülleimer → der OSM-Mülleimer wird aus den Kacheln entfernt.
 - **Grenzen:** höchstens 30 Anlegen und 30 Meldungen (inkl. Bestätigungen/Löschen) pro Tag (UTC) je Kennung **und** je IP-Adresse (IP nur als Hash mit Tages-Salz). Ein Anlegen weiter als 50 km vom ersten Anlegen derselben Kennung am selben Tag wird abgelehnt. Abgelehnte Beiträge bleiben auf der Uhr in der Warteschlange und werden später erneut gesendet.
@@ -99,6 +100,7 @@ D1-Datenbank `poo-tracker` (Region EEUR), Tabellen über `wrangler d1 migrations
 - `reports(target, uid, created)` – `target` = `s:<id>` oder `o:<k>:<lat5>:<lon5>`; eindeutig je (`target`, `uid`)
 - `hidden_osm(kind, lat5, lon5, root)` – OSM-Mülleimer mit 2 Meldungen
 - `counters(day, key, n_add, n_other, anchor_lat, anchor_lon)` – `key` = `u:<Kennung>` oder `ip:<Hash>`
+- `trusted(uid, note, created)` – vertrauenswürdige Kennungen (Migration 0002)
 
 ### Uhr
 
