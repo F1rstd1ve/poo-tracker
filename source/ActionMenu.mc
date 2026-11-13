@@ -8,6 +8,7 @@ import Toybox.WatchUi;
 //   Rückweg-Alarm ausgelöst             -> Aufgehoben
 //   Sack aufgehoben, nicht entsorgt     -> Entsorgt
 //   otherwise                           -> Sack ablegen
+// At the end: Touch an/aus (like the Garmin activity options).
 module ActionMenu {
 
     function open() as Void {
@@ -38,6 +39,8 @@ module ActionMenu {
         if (Pages.isEnabled(Pages.MAP)) {
             menu.addItem(new WatchUi.MenuItem(Rez.Strings.BrowseMap, null, :browse, null));
         }
+        // Like the Garmin activity options: touch on/off during the walk.
+        menu.addItem(Settings.touchMenuItem());
 
         WatchUi.pushView(menu, new ActionMenuDelegate(), WatchUi.SLIDE_UP);
     }
@@ -51,6 +54,11 @@ class ActionMenuDelegate extends WatchUi.Menu2InputDelegate {
 
     function onSelect(item as WatchUi.MenuItem) as Void {
         var id = item.getId();
+        if (id == :touch) {
+            // Toggles in place, the menu stays open.
+            Settings.setTouch((item as WatchUi.ToggleMenuItem).isEnabled());
+            return;
+        }
         WatchUi.popView(WatchUi.SLIDE_DOWN);
 
         if (id == :undoDrop) {

@@ -20,6 +20,7 @@ class StartView extends WatchUi.View {
     }
 
     function onShow() as Void {
+        Settings.applyTouch();
         var t = new Timer.Timer();
         t.start(method(:tick), 1000, true);
         _timer = t;

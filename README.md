@@ -103,7 +103,7 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] Speichern → „Spaziergang gespeichert“, App schließt, Aktivität erscheint in Garmin Connect als Gehen
 - [ ] Verwerfen → Rückfrage, nichts gespeichert
 - [ ] Tippen auf den Bildschirm startet und pausiert **nie** (Startbildschirm, Datenseiten, Alarm)
-- [ ] *Touch* aus (Startbildschirm → MENU halten): Touchscreen reagiert in der App nicht mehr, nach Verlassen der App wieder normal
+- [ ] *Touch* aus (Startbildschirm oder im Spaziergang → MENU halten): Touchscreen reagiert in der App nicht mehr, auch nach App-Neustart; nach Verlassen der App wieder normal
 - [ ] Stopp-Bildschirm: Garmin-Menü mit rotem Rand, Zeit, Weiter / Speichern / Verwerfen mit Symbolen
 - [ ] Karte antippen → Erkunden: Garmin-Steuerung zum Verschieben und Zoomen erscheint; BACK → Folgen
 

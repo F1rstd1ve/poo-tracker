@@ -80,8 +80,7 @@ module StartMenu {
                     [ShareQueue.size(), code == 0 ? "-" : code.toString()]),
                 :share, null));
         }
-        menu.addItem(new WatchUi.ToggleMenuItem(Rez.Strings.TouchItem, Rez.Strings.TouchItemSub,
-            :touch, Settings.touch, null));
+        menu.addItem(Settings.touchMenuItem());
         menu.addItem(new WatchUi.MenuItem(Rez.Strings.Privacy, Rez.Strings.PrivacySub, :privacy, null));
         WatchUi.pushView(menu, new StartMenuDelegate(), WatchUi.SLIDE_UP);
     }

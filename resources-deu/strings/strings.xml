@@ -56,7 +56,8 @@
     <string id="BinConfirmed">Bestätigt</string>
     <string id="ConfirmLater">Schon gespeichert – bestätigen ab morgen</string>
     <string id="TouchItem">Touch</string>
-    <string id="TouchItemSub">Aus: nur Tasten</string>
+    <string id="TouchOn">An</string>
+    <string id="TouchOff">Aus – nur Tasten</string>
     <string id="RemoveBin">Mülleimer entfernen</string>
     <string id="BinSaved">Mülleimer gespeichert</string>
     <string id="BinExists">Schon ein Mülleimer hier</string>

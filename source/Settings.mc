@@ -45,7 +45,9 @@ module Settings {
 
     // Turns the touchscreen on/off while the app is in the foreground
     // (API 5.2.0; older devices keep touch, the app still ignores taps that
-    // could start, pause or drop something, ADR 0007).
+    // could start, pause or drop something, ADR 0007). Called from every
+    // view's onShow: called in onStart (before the first view) the watch
+    // ignored it, and the system may reset it after its own menus.
     function applyTouch() as Void {
         if (WatchUi has :configureTouchEvents) {
             try {
@@ -55,7 +57,15 @@ module Settings {
         }
     }
 
-    // Changed on the watch (start screen menu).
+    // "Touch" switch for the start menu and the Aktionsmenü; the sublabel
+    // shows the current state ("An" / "Aus – nur Tasten").
+    function touchMenuItem() as WatchUi.ToggleMenuItem {
+        return new WatchUi.ToggleMenuItem(Rez.Strings.TouchItem,
+            {:enabled => Rez.Strings.TouchOn, :disabled => Rez.Strings.TouchOff},
+            :touch, touch, null);
+    }
+
+    // Changed on the watch (start menu or Aktionsmenü).
     function setTouch(on as Boolean) as Void {
         touch = on;
         try {

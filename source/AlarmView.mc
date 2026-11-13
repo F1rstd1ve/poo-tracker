@@ -13,6 +13,10 @@ class AlarmView extends WatchUi.View {
         View.initialize();
     }
 
+    function onShow() as Void {
+        Settings.applyTouch();
+    }
+
     function onUpdate(dc as Graphics.Dc) as Void {
         var w = dc.getWidth();
         var h = dc.getHeight();

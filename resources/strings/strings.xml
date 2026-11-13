@@ -56,7 +56,8 @@
     <string id="BinConfirmed">Confirmed</string>
     <string id="ConfirmLater">Already saved – confirm from tomorrow</string>
     <string id="TouchItem">Touch</string>
-    <string id="TouchItemSub">Off: buttons only</string>
+    <string id="TouchOn">On</string>
+    <string id="TouchOff">Off – buttons only</string>
     <string id="RemoveBin">Remove bin</string>
     <string id="BinSaved">Bin saved</string>
     <string id="BinExists">Already a bin here</string>

@@ -53,6 +53,11 @@ class MapPageView extends WatchUi.MapTrackView {
         setMapMode(WatchUi.MAP_MODE_PREVIEW);
     }
 
+    function onShow() as Void {
+        MapTrackView.onShow();
+        Settings.applyTouch();
+    }
+
     function onLayout(dc as Graphics.Dc) as Void {
         setScreenVisibleArea(0, 0, dc.getWidth(), dc.getHeight());
         showAround(initialCenter());
