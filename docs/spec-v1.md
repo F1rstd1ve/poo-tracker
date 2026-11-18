@@ -19,7 +19,7 @@ Ergebnis des Grilling-Interviews (November 2026). Begriffe siehe [GLOSSARY.md](.
 
 ## Bedienung
 
-- **LAP (kurz)** legt auf jeder Spaziergang-Seite sofort einen Sack ab (ADR 0005). Sonst bleibt LAP „zurück“: in Menüs, im Erkunden-Modus der Karte, auf dem Alarmbildschirm (blendet ihn aus), am Startbildschirm (App verlassen). Wischen nach rechts legt keinen Sack ab.
+- **LAP (kurz)** macht auf jeder Spaziergang-Seite das Naheliegende (ADR 0005, Nachtrag): Rückweg-Alarm ausgelöst → *Aufgehoben* (auch auf dem Alarmbildschirm); Sack in der Hand und Mülleimer ≤ 15 m → *Entsorgt*; Sack in der Hand ohne bekannten Mülleimer → Auswahl *Mülleimer hier* / *Hundekot-Behälter hier* / *Neuen Sack ablegen*; sonst → Sack ablegen. Sonst bleibt LAP „zurück“: in Menüs, im Erkunden-Modus der Karte, am Startbildschirm (App verlassen). Wischen nach rechts löst nichts aus.
 - **MENU halten** (lange auf UP) öffnet das kontextabhängige Aktionsmenü, oberster Eintrag vorausgewählt:
   - normal: *Sack ablegen* · *Mülleimer anlegen* · *Hundekot-Behälter anlegen* · *Mülleimer entfernen* · *Offene Sackdepots* · *Karte erkunden*
   - innerhalb 30 s nach dem Ablegen: *Ablegen rückgängig* zuoberst

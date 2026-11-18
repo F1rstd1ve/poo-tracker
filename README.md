@@ -74,7 +74,7 @@ Auf Cloudflare bringt sie die GitHub Action `.github/workflows/tiles.yml` (wöch
 | Taste | Wirkung |
 |---|---|
 | START | Pause-Menü (Fortsetzen / Speichern / Verwerfen) |
-| LAP (kurz) | Sack ablegen; in Menüs, im Karten-Erkunden und auf dem Alarmbildschirm: zurück |
+| LAP (kurz) | Sack ablegen; nach Rückweg-Alarm: Aufgehoben; mit Sack in der Hand: Entsorgt (ohne bekannten Mülleimer Auswahl „Mülleimer hier“ / „Hundekot-Behälter hier“ / „Neuen Sack ablegen“); in Menüs und im Karten-Erkunden: zurück |
 | MENU halten (lange UP) | Aktionsmenü: Ablegen rückgängig, Aufgehoben/Entsorgt, Mülleimer / Hundekot-Behälter anlegen, Mülleimer entfernen, Offene Sackdepots, Karte erkunden |
 | UP / DOWN | Seiten blättern |
 
@@ -116,7 +116,10 @@ Einstellbar: Datenseiten 1–3 (anzeigen, Layout 1–4 Felder, Felder), Mülleim
 - [ ] ≥ 50 m weggehen, zurückkommen: bei ≤ 25 m Alarm (Vibration, Ton, Alarmbildschirm mit Pfeil + Distanz zum Sack)
 - [ ] Pfeil zeigt auch im Stand in die richtige Richtung (Kompass)
 - [ ] Ohne Bestätigung: Wiederholung nach 30 s, höchstens 3×
-- [ ] LAP auf dem Alarmbildschirm blendet ihn aus (legt keinen Sack ab)
+- [ ] LAP auf dem Alarmbildschirm = Aufgehoben (UP/DOWN blendet ihn nur aus)
+- [ ] Direkt nach dem Ablegen nochmal LAP: zweiter Sack, kein Aufheben
+- [ ] Sack in der Hand, LAP am bekannten Mülleimer: Entsorgt; ohne bekannten Mülleimer: Auswahl, „Mülleimer hier“ entsorgt und legt ihn an
+- [ ] Aktionsmenü → Entsorgt ohne Mülleimer: Auswahl mit „Kein öffentlicher“ (legt nichts an)
 - [ ] MENU halten → *Aufgehoben* steht oben → Alarm weg, Sack verschwindet von der Karte
 - [ ] MENU halten → *Entsorgt* steht oben → erledigt
 - [ ] Zwei Säcke nah beieinander → ein Alarm „2 Säcke hier!“

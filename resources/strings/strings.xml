@@ -30,7 +30,7 @@
     <string id="OpenDepots">Open bag depots</string>
     <string id="AlarmOne">Bag here!</string>
     <string id="AlarmMany">$1$ bags here!</string>
-    <string id="AlarmHint">Hold MENU: picked up</string>
+    <string id="AlarmHint">LAP: picked up</string>
     <string id="BagsOne">1 bag</string>
     <string id="BagsMany">$1$ bags</string>
     <string id="StartOpenOne">1 open bag depot</string>
@@ -58,6 +58,12 @@
     <string id="TouchItem">Touch</string>
     <string id="TouchOn">On</string>
     <string id="TouchOff">Off – buttons only</string>
+    <string id="DisposeHereTitle">No bin known – disposed:</string>
+    <string id="DisposeBinHere">Bin here</string>
+    <string id="DisposeDogBinHere">Dog-waste bin here</string>
+    <string id="DropNewBag">Drop new bag</string>
+    <string id="DisposeNoPublic">No public bin</string>
+    <string id="DisposeNoPublicSub">e.g. at home, not saved</string>
     <string id="RemoveBin">Remove bin</string>
     <string id="BinSaved">Bin saved</string>
     <string id="BinExists">Already a bin here</string>

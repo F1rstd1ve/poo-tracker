@@ -30,7 +30,7 @@
     <string id="OpenDepots">Offene Sackdepots</string>
     <string id="AlarmOne">Sack hier!</string>
     <string id="AlarmMany">$1$ Säcke hier!</string>
-    <string id="AlarmHint">MENU halten: Aufgehoben</string>
+    <string id="AlarmHint">LAP: Aufgehoben</string>
     <string id="BagsOne">1 Sack</string>
     <string id="BagsMany">$1$ Säcke</string>
     <string id="StartOpenOne">1 offenes Sackdepot</string>
@@ -58,6 +58,12 @@
     <string id="TouchItem">Touch</string>
     <string id="TouchOn">An</string>
     <string id="TouchOff">Aus – nur Tasten</string>
+    <string id="DisposeHereTitle">Kein Mülleimer bekannt – entsorgt:</string>
+    <string id="DisposeBinHere">Mülleimer hier</string>
+    <string id="DisposeDogBinHere">Hundekot-Behälter hier</string>
+    <string id="DropNewBag">Neuen Sack ablegen</string>
+    <string id="DisposeNoPublic">Kein öffentlicher</string>
+    <string id="DisposeNoPublicSub">z. B. daheim, nicht gespeichert</string>
     <string id="RemoveBin">Mülleimer entfernen</string>
     <string id="BinSaved">Mülleimer gespeichert</string>
     <string id="BinExists">Schon ein Mülleimer hier</string>

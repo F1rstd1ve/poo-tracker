@@ -66,14 +66,9 @@ class ActionMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :undo) {
             Disposal.undo();
         } else if (id == :pickUp) {
-            ReturnAlarm.pickUp();
-            Pages.map().refreshDepots();
-            WalkSession.updateFit();
-            Feedback.vibe();
-            Feedback.toast(Rez.Strings.PickedUp);
-            Pages.showBins();
+            LapAction.pickUp();
         } else if (id == :dispose) {
-            Disposal.dispose(false);
+            LapAction.dispose(false);
         } else if (id == :dropBag) {
             DropBag.start();
         } else if (id == :addBin) {

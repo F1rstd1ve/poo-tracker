@@ -86,8 +86,9 @@ class PageDelegate extends WatchUi.BehaviorDelegate {
         return true;
     }
 
+    // LAP: Aufgehoben / Entsorgt / Sack ablegen, see LapAction.
     function onLapButton() as Void {
-        DropBag.start();
+        LapAction.run();
     }
 
     // A touch on the screen: only the map reacts (opens "Erkunden").

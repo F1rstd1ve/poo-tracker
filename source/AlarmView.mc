@@ -5,8 +5,8 @@ import Toybox.Position;
 import Toybox.WatchUi;
 
 // Alarm screen of the Rückweg-Alarm: leads to the Sackdepot itself (arrow +
-// distance) so the bag can be found; holding MENU opens the Aktionsmenü with
-// "Aufgehoben" on top.
+// distance) so the bag can be found; LAP = "Aufgehoben" (holding MENU opens
+// the Aktionsmenü with "Aufgehoben" on top).
 class AlarmView extends WatchUi.View {
 
     function initialize() {
@@ -68,8 +68,9 @@ class AlarmView extends WatchUi.View {
     }
 }
 
-// Same keys as on the pages (START pauses, hold MENU opens the menu);
-// UP/DOWN and LAP (back) hide the alarm screen without confirming it.
+// Same keys as on the pages (START pauses, hold MENU opens the menu, LAP is
+// "Aufgehoben" via LapAction); UP/DOWN hide the alarm screen without
+// confirming it.
 class AlarmDelegate extends PageDelegate {
 
     function initialize() {
@@ -92,11 +93,6 @@ class AlarmDelegate extends PageDelegate {
 
     // A tap on the alarm screen does nothing.
     function onScreenTap() as Void {
-    }
-
-    function onBack() as Boolean {
-        dismiss();
-        return true;
     }
 
     private function dismiss() as Void {
